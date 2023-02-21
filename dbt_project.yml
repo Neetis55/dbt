@@ -37,3 +37,7 @@ models:
         +materialized: table
     staging:
         +materialized : view
+    sales:
+      schema : sales
+    finance:
+      schema : finance
