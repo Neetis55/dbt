@@ -7,4 +7,4 @@ select
     {{ cents_to_dollars('amount', 4) }} amount,
     created as created_at
 
-from "RAW"."STRIPE"."PAYMENT"
+from {{ source('stripe', 'payment') }}
