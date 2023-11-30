@@ -1,0 +1,81 @@
+version: 2
+
+models:
+  - name: MART_SALES_FUNNEL_FACT
+    columns:
+     - name:  FUNNEL_KEY
+       tests:
+         - unique
+         - not_null
+     - name:  DIRECT_CUSTOMER_CODE
+       tests:
+        - edw_test_referential_integrity_fact_to_dim:
+            config:
+                severity: warn
+            param_source_table_name: ref('MART_SALES_CUSTOMER')
+            param_source_column_name: CUSTOMER_CODE
+            param_source_column_hash_name: CUSTOMER_KEY
+            param_target_condition: "1=1"
+     - name:  INDIRECT_CUSTOMER_CODE
+       tests:
+        - edw_test_referential_integrity_fact_to_dim:
+            config:
+              severity: warn
+            param_source_table_name: ref('MART_SALES_CUSTOMER')
+            param_source_column_name: CUSTOMER_CODE
+            param_source_column_hash_name: CUSTOMER_KEY
+            param_target_condition: "1=1"
+     - name:  END_CUSTOMER_CODE
+       tests:
+        - edw_test_referential_integrity_fact_to_dim:
+            config:
+              severity: warn
+            param_source_table_name: ref('MART_SALES_CUSTOMER')
+            param_source_column_name: CUSTOMER_CODE
+            param_source_column_hash_name: CUSTOMER_KEY
+            param_target_condition: "1=1"
+     - name:  DIRECT_CORPORATION_CODE
+       tests:
+        - edw_test_referential_integrity_fact_to_dim:
+            config:
+              severity: warn
+            param_source_table_name: ref('MART_SALES_CORPORATION')
+            param_source_column_name: CORPORATION_CODE
+            param_source_column_hash_name: CORPORATION_KEY
+            param_target_condition: "1=1"
+     - name:  INDIRECT_CORPORATION_CODE
+       tests:
+        - edw_test_referential_integrity_fact_to_dim:
+            config:
+              severity: warn
+            param_source_table_name: ref('MART_SALES_CORPORATION')
+            param_source_column_name: CORPORATION_CODE
+            param_source_column_hash_name: CORPORATION_KEY
+            param_target_condition: "1=1"
+     - name:  END_CORPORATION_CODE
+       tests:
+        - edw_test_referential_integrity_fact_to_dim:
+            config:
+              severity: warn
+            param_source_table_name: ref('MART_SALES_CORPORATION')
+            param_source_column_name: CORPORATION_CODE
+            param_source_column_hash_name: CORPORATION_KEY
+            param_target_condition: "1=1"
+     - name:  MARKET_PRODUCT_NUMBER
+       tests:
+        - edw_test_referential_integrity_fact_to_dim:
+            config:
+              severity: warn
+            param_source_table_name: ref('MART_SALES_PRODUCT')
+            param_source_column_name: PRODUCT_ID
+            param_source_column_hash_name: PRODUCT_KEY
+            param_target_condition: "1=1"
+     - name:  INTERNAL_PART_NUMBER
+       tests:
+        - edw_test_referential_integrity_fact_to_dim:
+            config:
+              severity: warn
+            param_source_table_name: ref('MART_SALES_PRODUCT')
+            param_source_column_name: PRODUCT_ID
+            param_source_column_hash_name: PRODUCT_KEY
+            param_target_condition: "1=1"

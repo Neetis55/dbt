@@ -1,0 +1,143 @@
+version: 2
+
+models:
+####################### 1. MART_SALES_TERRITORY TESTING #####################################
+  - name: MART_SALES_SALES_TERRITORY
+    columns:
+     - name:  SALES_TERRITORY_KEY
+       tests:
+         - unique
+         - not_null
+####################### 2. MART_SALES_CORPORATION TESTING #####################################
+  - name: MART_SALES_CORPORATION
+    columns:
+     - name:  CORPORATION_KEY
+       tests:
+         - unique
+         - not_null           
+####################### 3. MART_SALES_CUSTOMER TESTING #####################################
+  - name: MART_SALES_CUSTOMER
+    columns:
+     - name:  CUSTOMER_KEY
+       tests:
+         - unique
+         - not_null
+####################### 4. MART_SALES_BILLING_CUSTOMER_BRIDGE  TESTING #####################################       
+  - name: MART_SALES_BILLING_CUSTOMER_BRIDGE
+    columns:
+     - name:  BILLING_KEY
+       tests:
+         - unique
+         - not_null
+####################### 5. MART_SALES_PRODUCT TESTING #####################################
+  - name: MART_SALES_PRODUCT
+    columns:
+     - name:  PRODUCT_KEY
+       tests:
+         - unique
+         - not_null
+####################### 6. BACKLOG_CUSTOMER_BRIDGE TESTING #####################################
+  - name: MART_SALES_BACKLOG_CUSTOMER_BRIDGE
+    columns:
+     - name:  BACKLOG_KEY||'--'||SNAPSHOT_DATE_KEY
+       tests:
+         - unique
+         - not_null
+####################### 7. POS CUSTOMER BRIDGE  TESTING #####################################
+  - name: MART_SALES_POINT_OF_SALES_CUSTOMER_BRIDGE
+    columns:
+     - name:  TRANSACTION_KEY
+       tests:
+         - unique
+         - not_null                                 
+####################### 8. MART_SALES_PRODUCT_NPD_BUCKET_REF TESTING #####################################
+  - name: MART_SALES_PRODUCT_NPD_BUCKET_REF
+    columns:
+     - name:  NPD_BUCKET
+       tests:
+         - unique
+         - not_null
+####################### 9. MART_SALES_PRODUCT_PRICE_WORKSHEET_HIST TESTING #####################################
+  - name: MART_SALES_PRODUCT_PRICE_WORKSHEET_HIST
+    columns:
+     - name:  GPS_KEY
+       tests:
+         - unique
+         - not_null
+####################### 10. MART_SALES_PRODUCT_PRICE_WORKSHEET TESTING #####################################
+  - name: MART_SALES_PRODUCT_PRICE_WORKSHEET
+    columns:
+     - name:  GPS_KEY
+       tests:
+         - unique
+         - not_null
+####################### 11. MART_SALES_PRODUCT_WEB_DOCUMENT TESTING #####################################
+  - name: MART_SALES_PRODUCT_WEB_DOCUMENT
+    columns:
+     - name: PRODUCT_WEB_DOCUMENT_KEY
+       tests:
+         - unique
+         - not_null   
+####################### 12. MART_SALES_PRODUCT_LEADTIME_FACT TESTING #####################################
+  - name: MART_SALES_PRODUCT_LEADTIME_FACT
+    columns:
+     - name:  PRODUCT_LEADTIME_KEY
+       tests:
+         - unique
+         - not_null  
+####################### 13. MART_SALES_PRODUCT_LEADTIME_BUCKET_BRIDGE TESTING #####################################
+  - name: MART_SALES_PRODUCT_LEADTIME_BUCKET_BRIDGE
+    columns:
+     - name:  PRODUCT_LEADTIME_BUCKET_BRIDGE_KEY
+       tests:
+         - unique
+         - not_null
+####################### 14. MART_SALES_SAMPLE_FACT TESTING #####################################
+  - name: MART_SALES_SAMPLE_FACT
+    columns:
+     - name:  SAMPLE_KEY
+       tests:
+         - unique
+         - not_null 
+####################### 15. MART_SALES_PRODUCT_CLASSIFICATION_FACT TESTING #####################################
+  - name: MART_SALES_PRODUCT_CLASSIFICATION_FACT
+    columns:
+     - name:  MARKET_PRODUCT_NUMBER_KEY
+       tests:
+         - unique
+         - not_null  
+
+##############################################################################
+####################### SNAPSHOT TESTING #####################################
+##############################################################################
+snapshots :
+####################### 1. SALES_TERRITORY TESTING #####################################
+  - name: MART_SALES_SALES_TERRITORY_HIST
+    columns:
+    - name:  SALES_TERRITORY_KEY||'--'||DBT_VALID_FROM
+      tests:
+        - unique
+        - not_null
+####################### 2. MART_SALES_CORPORATION_HIST TESTING #####################################
+  - name: MART_SALES_CORPORATION_HIST
+    columns:
+     - name:  CORPORATION_KEY||'--'||DBT_VALID_FROM
+       tests:
+         - unique
+         - not_null
+####################### 3. MART_SALES_CUSTOMER_HIST TESTING #####################################
+  - name: MART_SALES_CUSTOMER_HIST
+    columns:
+     - name:  CUSTOMER_KEY||'--'||DBT_VALID_FROM
+       tests:
+         - unique
+         - not_null
+
+####################### 3. MART_SALES_PRODUCT_SCD2 TESTING #####################################
+  - name: MART_SALES_PRODUCT_HIST
+    columns:
+     - name:  PRODUCT_KEY||'--'||DBT_VALID_FROM
+       tests:
+         - unique
+         - not_null
+
