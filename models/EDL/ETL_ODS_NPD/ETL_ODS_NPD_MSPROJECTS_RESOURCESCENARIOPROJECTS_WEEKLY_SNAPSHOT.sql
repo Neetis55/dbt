@@ -1,0 +1,116 @@
+
+/*---------------------------------------------------------------------------
+Command to run model:
+-- dbt run --select ETL_ODS_NPD_MSPROJECTS_RESOURCESCENARIOPROJECTS_WEEKLY_SNAPSHOT 
+-- dbt build --full-refresh --select ETL_ODS_NPD_MSPROJECTS_RESOURCESCENARIOPROJECTS_WEEKLY_SNAPSHOT 
+
+Version     Date            Author              Description
+-------     --------        -----------         ----------------------------------
+1.0         25-JAN-2023     KALI DANDAPANI      Initial Version
+---------------------------------------------------------------------------*/
+
+{################# EDW Job Template Variables #################}
+{%-set v_pk_list = ['PROJECTID','SCENARIOID']-%}
+
+{################# Batch control insert and update SQL #################}
+{%- set v_dbt_job_name = 'DBT_ETL_ODS_NPD_MSPROJECTS_RESOURCESCENARIOPROJECTS_WEEKLY_SNAPSHOT'-%}
+-- Step 1 Batch process info
+{%- set v_watermark = edw_batch_control(v_dbt_job_name,config.get('schema'),config.get('alias') ,config.get('tags'),config.get('materialized') ) -%}
+{%- set V_LWM = v_watermark[0] -%}
+{%- set V_HWM = v_watermark[1] -%}
+{%- set V_START_DTTM = v_watermark[2] -%}
+{%- set V_BIW_BATCH_ID = v_watermark[3] -%}
+{%- set v_sql_upd_success_batch = "CALL UTILITY.EDW_BATCH_SUCCESS_PROC('"~v_dbt_job_name~"')" -%}
+
+{################# Snowflake Object Configuration #################}
+{{
+    config(
+         description = 'Building ETL table RESOURCESCENARIOPROJECTS_WEEKLY_SNAPSHOT for NPD LANDING PROJECT'
+        ,transient=true   
+        ,materialized='table'
+        ,schema ='ETL_ODS_NPD'
+        ,alias= 'MSPROJECTS_RESOURCESCENARIOPROJECTS_WEEKLY_SNAPSHOT'
+        ,tags =['ODS_NPD']
+        ,post_hook= [v_sql_upd_success_batch]	
+        )
+}}
+
+WITH FISCAL_WEEK AS 
+(
+    SELECT 
+        DISTINCT FISCAL_WEEK_KEY
+    FROM 
+    {{ref('MART_DATE') }}
+    WHERE 
+        CALENDAR_DATE = (CURRENT_TIMESTAMP() - INTERVAL '7 HOUR')::DATE
+        or CALENDAR_DATE = (CURRENT_TIMESTAMP() )::DATE
+)
+
+,RESOURCESCENARIOPROJECTS AS (
+SELECT PROJECTID
+, SCENARIOID
+, ABSOLUTEPRIORITY
+, ANALYSISID
+, ANALYSISNAME
+, COSTCONSTRAINTSCENARIOID
+, COSTCONSTRAINTSCENARIONAME
+, FORCEALIASLOOKUPTABLEID
+, FORCEALIASLOOKUPTABLENAME
+, FORCESTATUS
+, HARDCONSTRAINTVALUE
+, NEWSTARTDATE
+, PRIORITY
+, PROJECTNAME
+, RESOURCECOST
+, RESOURCEWORK
+, SCENARIONAME
+, STATUS
+, LINKEDANALYSIS
+, LINKEDCOSTCONSTRAINTSCENARIO
+, LINKEDPROJECT
+, LINKEDRESOURCECONSTRAINTSCENARIO
+, BIW_INS_DTTM
+, BIW_UPD_DTTM
+FROM 
+    {{source ('STG_NPD_MSPROJECTS_ODATAV1','RESOURCESCENARIOPROJECTS')}}  
+    QUALIFY( ROW_NUMBER() OVER (PARTITION BY PROJECTID ,SCENARIOID ORDER BY BIW_UPD_DTTM DESC) =1)
+)
+
+SELECT 
+    MD5(OBJECT_CONSTRUCT (  'COL1',FSC_WK.FISCAL_WEEK_KEY::STRING
+                            ,'COL2',STG.PROJECTID::STRING
+                            ,'COL3',STG.SCENARIOID::STRING
+                         )::STRING 
+        )::BINARY AS RESOURCESCENARIOPROJECTS_KEY 
+    ,FSC_WK.FISCAL_WEEK_KEY AS SNAPSHOT_WEEK_KEY
+    ,PROJECTID
+, STG.SCENARIOID
+, STG.ABSOLUTEPRIORITY
+, STG.ANALYSISID
+, STG.ANALYSISNAME
+, STG.COSTCONSTRAINTSCENARIOID
+, STG.COSTCONSTRAINTSCENARIONAME
+, STG.FORCEALIASLOOKUPTABLEID
+, STG.FORCEALIASLOOKUPTABLENAME
+, STG.FORCESTATUS
+, STG.HARDCONSTRAINTVALUE
+, STG.NEWSTARTDATE
+, STG.PRIORITY
+, STG.PROJECTNAME
+, STG.RESOURCECOST
+, STG.RESOURCEWORK
+, STG.SCENARIONAME
+, STG.STATUS
+, STG.LINKEDANALYSIS
+, STG.LINKEDCOSTCONSTRAINTSCENARIO
+, STG.LINKEDPROJECT
+,STG.LINKEDRESOURCECONSTRAINTSCENARIO
+,'{{V_START_DTTM}}'::TIMESTAMP_NTZ BIW_INS_DTTM 
+    ,'{{V_START_DTTM}}'::TIMESTAMP_NTZ BIW_UPD_DTTM 
+   ,{{V_BIW_BATCH_ID}}::NUMBER as BIW_BATCH_ID 
+   ,md5(object_construct ('COL1',PROJECTID::string ,'COL2',SCENARIOID::string ,'COL3',ABSOLUTEPRIORITY::string ,'COL4',ANALYSISID::string ,'COL5',ANALYSISNAME::string ,'COL6',COSTCONSTRAINTSCENARIOID::string ,'COL7',COSTCONSTRAINTSCENARIONAME::string ,'COL8',FORCEALIASLOOKUPTABLEID::string ,'COL9',FORCEALIASLOOKUPTABLENAME::string ,'COL10',FORCESTATUS::string ,'COL11',HARDCONSTRAINTVALUE::string ,'COL12',NEWSTARTDATE::string ,'COL13',PRIORITY::string ,'COL14',PROJECTNAME::string ,'COL15',RESOURCECOST::string ,'COL16',RESOURCEWORK::string ,'COL17',SCENARIONAME::string ,'COL18',STATUS::string ,'COL19',LINKEDANALYSIS::string ,'COL20',LINKEDCOSTCONSTRAINTSCENARIO::string ,'COL21',LINKEDPROJECT::string ,'COL22',LINKEDRESOURCECONSTRAINTSCENARIO::string )::string )::BINARY as BIW_MD5_KEY
+
+FROM     
+RESOURCESCENARIOPROJECTS  STG 
+
+CROSS JOIN FISCAL_WEEK FSC_WK
