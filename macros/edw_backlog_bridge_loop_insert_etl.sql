@@ -1,0 +1,386 @@
+{% macro edw_backlog_bridge_loop_insert_etl(param_backlog_start_date,param_backlog_end_date,param_v_lwm, param_v_hwm,  param_start_dttm, param_batch_id ) -%}
+/*---------------------------------------------------------------------------
+Custom macro to improve backlog bridge performance issue  
+
+Version     Date            Author          Description
+-------     --------        -----------    ----------------------------------
+1.0         NOV-01-2022     KALI D         Initial Version
+2.0         DEC-09-2022     SRUTHI KASBE   Renaming the existing columns
+---------------------------------------------------------------------------*/
+
+{################# CREATE OBJECT IF MISSING #################}
+{% set query %}
+create  transient TABLE IF NOT EXISTS  ETL_MART_SALES.BACKLOG_CUSTOMER_BRIDGE_TBL (
+	BACKLOG_KEY VARCHAR(32),
+	SNAPSHOT_DATE_KEY NUMBER(38,0),
+	DIRECT_CUSTOMER_KEY VARCHAR(32),
+	INDIRECT_CUSTOMER_KEY VARCHAR(32),
+	DIRECT_CORPORATION_KEY VARCHAR(32),
+	INDIRECT_CORPORATION_KEY VARCHAR(32),
+	END_CORPORATION_KEY VARCHAR(32),
+	ADJUSTED_END_CORPORATION_KEY VARCHAR(32),
+	REFERENCE_CORPORATION_KEY VARCHAR(32),
+	DIRECT_CUSTOMER_CODE VARCHAR(16777216),
+	DIRECT_CORPORATION_CODE VARCHAR(80),
+	INDIRECT_CUSTOMER_CODE VARCHAR(16777216),
+	INDIRECT_CORPORATION_CODE VARCHAR(80),
+	END_CORPORATION_CODE VARCHAR(80),
+	ADJUSTED_END_CORPORATION_CODE VARCHAR(80),
+	REFERENCE_CORPORATION_CODE VARCHAR(80),
+	END_CORPORATION_DEFINITION VARCHAR(26),
+	PROCESS_DATE DATE,
+	BIW_INS_DTTM TIMESTAMP_NTZ(9),
+	BIW_UPD_DTTM TIMESTAMP_NTZ(9),
+	BIW_BATCH_ID NUMBER(38,0),
+	BIW_MD5_KEY VARCHAR(32)
+) 
+{% endset %}
+{% do run_query(query) %}
+
+{################# LOAD THE DATA INTO TABLE #################}
+{% set query %}
+insert into  ETL_MART_SALES.BACKLOG_CUSTOMER_BRIDGE_TBL
+WITH 
+PRIOR_BATCH AS (
+SELECT P.PROCESS_NAME, Max(B.BATCH_ID ) AS BATCH_ID--,B.*
+FROM UTILITY.EDW_PROCESS_INFO P
+  JOIN UTILITY.EDW_PROCESS_BATCH_CTL B
+  ON P.PROCESS_ID=B.PROCESS_ID
+WHERE PROCESS_NAME IN (  'SHAREPOINT_MDL_ADJUSTED_END_CORPORATION','SHAREPOINT_MDL_REFERENCE_DESIGN_CUSTOMER','EBS_APPS_XXON_INV_CUSTITEM_XREF_V')
+AND START_DTTM <= '{{param_v_lwm}}'
+GROUP BY P.PROCESS_NAME
+  ),
+  XXON_INV_CUSTITEM_XREF_V AS
+(
+SELECT
+    CUST_CODE  AS CUSTOMER_CODE,
+    CUST_PART_NUMBER AS CPN,
+    PART_NUMBER AS MPN,
+    CUST_OF_INTEREST_TXT AS CUSTOMER_OF_INTEREST,
+    LENGTH(CUST_CODE) AS LEN_CUST_CD, -- IF 5 THEN CUSTOMER, IF 4 THEN CORPORATION
+    EFFECTIVE_FROM_DATE AS EFFECTIVE_FROM_DT,
+    EFFECTIVE_TO_DATE AS EFFECTIVE_END_DT,
+    BIW_UPD_DTTM
+FROM {{source('STG_EBS_APPS','XXON_INV_CUSTITEM_XREF_V')}}
+WHERE 1=1
+-- MOVING DOWN INJOIN AND CUSTOMER_OF_INTEREST <> 'COIW' -- COI NO END CUSTOMER
+AND LENGTH(CUST_CODE) IN (4,5) 
+QUALIFY (ROW_NUMBER() OVER (PARTITION BY CUST_PART_NUMBER,PART_NUMBER,CUST_CODE ORDER BY BIW_UPD_DTTM DESC )=1)
+)
+,MART_CUST AS
+(
+SELECT
+    CUSTOMER_KEY,
+    CUSTOMER_CODE,
+    CORPORATION_CODE,
+    BUSINESS_CLASS_CODE,
+    END_CORPORATION_CODE as CUST_END_CORPORATION_CODE
+FROM {{ref('MART_SALES_CUSTOMER')}}
+)
+,DATAWARE_COI AS
+(
+SELECT 
+DISTINCT
+    PART_REF.CPN,
+    PART_REF.MPN,
+    CASE 
+        WHEN PART_REF.LEN_CUST_CD=5 THEN PART_REF.CUSTOMER_CODE 
+    END AS CUSTOMER_CODE,
+    CASE 
+        WHEN PART_REF.LEN_CUST_CD = 4 THEN PART_REF.CUSTOMER_CODE 
+    END AS CORPORATION_CODE,
+    CASE 
+        WHEN PART_REF.LEN_CUST_CD=5 THEN PART_REF.CUSTOMER_OF_INTEREST 
+    END AS CUSTOMER_OF_INTEREST,
+    CASE 
+        WHEN PART_REF.LEN_CUST_CD = 4 THEN PART_REF.CUSTOMER_OF_INTEREST 
+        WHEN PART_REF.LEN_CUST_CD = 5 THEN CUST.CORPORATION_CODE 
+    END AS CORPORATION_OF_INTEREST,
+    PART_REF.EFFECTIVE_FROM_DT,
+    PART_REF.EFFECTIVE_END_DT,
+    PART_REF.BIW_UPD_DTTM
+FROM XXON_INV_CUSTITEM_XREF_V PART_REF
+LEFT JOIN  MART_CUST CUST
+ON PART_REF.CUSTOMER_OF_INTEREST= CUST.CUSTOMER_CODE
+)
+,SDM_ADJ_END_CORP AS
+(
+SELECT
+    NULLIF(MPN,'') as PRODUCT_ID,
+    NULLIF(DIR_CUST_CD,'') as DIR_CUST_CD ,
+    NULLIF(IND_CUST_CD,'') as IND_CUST_CD,
+    NULLIF(END_CORP_CD,'') as END_CORP_CD,
+    NULLIF(ADJUSTED_END_CORP_CD,'') as ADJUSTED_END_CORP_CD,
+    EFFECTIVE_START_DATE as EFFECTIVE_FROM_DATE,
+    EFFECTIVE_END_DATE as EFFECTIVE_TO_DATE,
+    BIW_UPD_DTTM
+FROM {{source('STG_SHAREPOINT_MDL','ADJUSTED_END_CORPORATION')}}
+QUALIFY (ROW_NUMBER() OVER (PARTITION BY PRODUCT_ID,DIR_CUST_CD,IND_CUST_CD,END_CORP_CD,EFFECTIVE_FROM_DATE,EFFECTIVE_TO_DATE ORDER BY BIW_UPD_DTTM DESC )=1)
+)
+,SDM_REF_CORP AS
+(
+SELECT
+    NULLIF(MPN,'') as PRODUCT_ID,
+    NULLIF(DIR_CUST_CD,'') as DIR_CUST_CD,
+    NULLIF(IND_CUST_CD,'') as IND_CUST_CD,
+    NULLIF(END_CORP_CD,'') as END_CORP_CD,
+    NULLIF(REFERENCE_CORP_CD,'') as REFERENCE_CORP_CD,
+    EFFECTIVE_START_DATE as EFFECTIVE_FROM_DATE,
+    EFFECTIVE_END_DATE as EFFECTIVE_TO_DATE,
+    BIW_UPD_DTTM
+FROM {{source('STG_SHAREPOINT_MDL','REFERENCE_DESIGN_CUSTOMER')}}
+QUALIFY (ROW_NUMBER() OVER (PARTITION BY MPN,DIR_CUST_CD,IND_CUST_CD,END_CORP_CD,EFFECTIVE_START_DATE,EFFECTIVE_END_DATE ORDER BY BIW_UPD_DTTM DESC )=1)
+),
+
+MART_BKLG AS (
+SELECT 
+    BACKLOG_KEY,
+    SNAPSHOT_DATE_KEY,
+    PROCESS_DATE,
+    DIRECT_CUSTOMER_KEY,
+    DIRECT_CORPORATION_KEY,
+    INDIRECT_CUSTOMER_KEY,
+    DIRECT_CUSTOMER_CODE,
+    INDIRECT_CUSTOMER_CODE,
+    CUSTOMER_PART_NUMBER,
+    MARKET_PRODUCT_NUMBER,
+    END_CORPORATION_CODE AS BLKG_END_CORP,
+    BIW_INS_DTTM,
+    BIW_UPD_DTTM,
+    BIW_BATCH_ID
+FROM
+    {{ ref('MART_SALES_BACKLOG_FACT')}}
+    WHERE SOURCE_OF_SALE = 'ON'
+    and PROCESS_DATE >= {{param_backlog_start_date}}   
+    and PROCESS_DATE < {{param_backlog_end_date}}   
+    --1 : Direct impact: Record changed in the mart
+    AND CASE 
+            WHEN (BIW_UPD_DTTM >= '{{param_v_lwm}}' AND BIW_UPD_DTTM < '{{param_v_hwm}}') 
+            THEN 1
+    --2. InDirect Impact
+        -- Change in COI
+            WHEN (DIRECT_CUSTOMER_CODE,CUSTOMER_PART_NUMBER,MARKET_PRODUCT_NUMBER) IN (
+                                                                                SELECT DISTINCT CUSTOMER_CODE,CPN,MPN
+                                                                                FROM (
+                                                                                        SELECT CUSTOMER_CODE, CPN, MPN, EFFECTIVE_FROM_DT, EFFECTIVE_END_DT
+                                                                                        FROM DATAWARE_COI COI
+                                                                                        WHERE COI.BIW_UPD_DTTM >= '{{param_v_lwm}}' 
+                                                                                            AND BIW_UPD_DTTM < '{{param_v_hwm}}'
+                                                                                        MINUS
+                                                                                        SELECT CUST_CODE, CUST_PART_NUMBER, PART_NUMBER, EFFECTIVE_FROM_DATE, EFFECTIVE_TO_DATE
+                                                                                        FROM {{source('STG_EBS_APPS','XXON_INV_CUSTITEM_XREF_V')}}
+                                                                                        WHERE BIW_BATCH_ID =(SELECT NVL(BATCH_ID ,-1) 
+                                                                                                            FROM PRIOR_BATCH 
+                                                                                                            WHERE PROCESS_NAME='EBS_APPS_XXON_INV_CUSTITEM_XREF_V' )
+                                                                                    )
+                                                                                )
+                THEN 1
+        -- Change in the Sharepoint Adjusted and Reference Corp
+            WHEN (DIRECT_CUSTOMER_CODE,BLKG_END_CORP,MARKET_PRODUCT_NUMBER) IN (
+                                                                                    SELECT DISTINCT
+                                                                                        DIR_CUST_CD,END_CORP_CD,PRODUCT_ID
+                                                                                    FROM SDM_ADJ_END_CORP ADJ
+                                                                                    WHERE ADJ.BIW_UPD_DTTM >= '{{param_v_lwm}}' 
+                                                                                        AND BIW_UPD_DTTM < '{{param_v_hwm}}' 
+                                                                                    MINUS 
+                                                                                    SELECT DISTINCT
+                                                                                        DIR_CUST_CD,END_CORP_CD,NULLIF(MPN,'')
+                                                                                    FROM {{source('STG_SHAREPOINT_MDL','ADJUSTED_END_CORPORATION')}}
+                                                                                    WHERE BIW_BATCH_ID =(SELECT NVL(BATCH_ID ,-1)
+                                                                                                            FROM PRIOR_BATCH 
+                                                                                                            WHERE PROCESS_NAME='SHAREPOINT_MDL_ADJUSTED_END_CORPORATION'
+                                                                                                        )
+                                                                                )
+                THEN 1
+            WHEN (DIRECT_CUSTOMER_CODE,BLKG_END_CORP,MARKET_PRODUCT_NUMBER) IN (
+                                                                        SELECT DISTINCT
+                                                                            DIR_CUST_CD,END_CORP_CD,PRODUCT_ID
+                                                                        FROM SDM_REF_CORP REF
+                                                                        WHERE REF.BIW_UPD_DTTM >= '{{param_v_lwm}}' AND BIW_UPD_DTTM < '{{param_v_hwm}}' 
+                                                                        MINUS 
+                                                                        SELECT DISTINCT
+                                                                            DIR_CUST_CD,END_CORP_CD,NULLIF(MPN,'')
+                                                                        FROM {{source('STG_SHAREPOINT_MDL','REFERENCE_DESIGN_CUSTOMER')}}
+                                                                        WHERE BIW_BATCH_ID =(SELECT NVL(BATCH_ID ,-1)
+                                                                                                FROM PRIOR_BATCH 
+                                                                                                WHERE PROCESS_NAME='SHAREPOINT_MDL_REFERENCE_DESIGN_CUSTOMER'
+                                                                                            )
+                                                                        )
+                THEN 1
+            {% if var('is_backfill') %}
+            WHEN 1=1 THEN 1 
+            {% endif %}
+            END =1 
+)
+
+,MART_CORP AS
+(
+SELECT
+    CORPORATION_KEY,
+    CORPORATION_CODE
+FROM {{ref('MART_SALES_CORPORATION')}}
+),
+SDM_ALLOWED_CORP AS
+(
+SELECT
+    CORP_CD AS CORPORATION_CODE
+FROM {{source('STG_SDM_PRESENTATION','CPNOEM_ALLOWEDCORP')}}
+QUALIFY (ROW_NUMBER() OVER (PARTITION BY CORP_CD ORDER BY BIW_UPD_DTTM DESC )=1)
+)
+,SDM_CPNASIC AS
+(
+SELECT
+    PRODUCT_ID
+FROM {{source('STG_SDM_PRESENTATION','CPNASIC_ALLOWEDPROD')}}
+QUALIFY (ROW_NUMBER() OVER (PARTITION BY PRODUCT_ID ORDER BY BIW_UPD_DTTM DESC )=1)
+)
+
+SELECT 
+    BKLG.BACKLOG_KEY,
+    BKLG.SNAPSHOT_DATE_KEY,
+    BKLG.DIRECT_CUSTOMER_KEY,
+    BKLG.INDIRECT_CUSTOMER_KEY,
+    BKLG.DIRECT_CORPORATION_KEY,
+    COALESCE(END_CORP.CORPORATION_CODE,INDIR_CUST.CORPORATION_CODE) AS INDIRECT_CORPORATION_CODE,
+
+
+    MD5(INDIRECT_CORPORATION_CODE) AS INDIRECT_CORPORATION_KEY,  
+    CASE
+        WHEN CUST.BUSINESS_CLASS_CODE = 'EMSI' 
+                THEN COALESCE(DIR_CORP.CORPORATION_CODE, CORP_COI_CORP.CORPORATION_CODE,CUST.CORPORATION_CODE)
+        WHEN CUST.BUSINESS_CLASS_CODE = 'OEM' AND OEM_CORP.CORPORATION_CODE IS NOT NULL 
+                THEN COALESCE(DIR_CORP.CORPORATION_CODE, CORP_COI_CORP.CORPORATION_CODE,CUST.CORPORATION_CODE)
+        WHEN CUST.BUSINESS_CLASS_CODE IN ('DIST','CIPO') AND CPNASIC.PRODUCT_ID IS NOT NULL 
+                THEN COALESCE(DIR_CORP.CORPORATION_CODE, CORP_COI_CORP.CORPORATION_CODE,CUST.CORPORATION_CODE)
+        ELSE COALESCE(END_CORP.CORPORATION_CODE,INDIR_CUST.CORPORATION_CODE)
+    END  AS  END_CORPORATION_CODE,
+    md5(END_CORPORATION_CODE) as END_CORPORATION_KEY,  
+    COALESCE( ADJ_CORP.ADJUSTED_END_CORP_CD
+            , ADJ_CORP_DIR_CUST.ADJUSTED_END_CORP_CD
+            , ADJ_CORP_INDIR_CUST.ADJUSTED_END_CORP_CD
+            , END_CORPORATION_CODE
+            ) ADJUSTED_END_CORPORATION_CODE,
+    MD5(ADJUSTED_END_CORPORATION_CODE)   AS ADJUSTED_END_CORPORATION_KEY,
+    COALESCE( REF_CORP.REFERENCE_CORP_CD
+            , REF_CORP_DIR_CUST.REFERENCE_CORP_CD
+            , REF_CORP_INDIR_CUST.REFERENCE_CORP_CD
+            , END_CORPORATION_CODE
+            ) AS REFERENCE_CORPORATION_CODE,
+    MD5(REFERENCE_CORPORATION_CODE) AS REFERENCE_CORPORATION_KEY,
+    BKLG.DIRECT_CUSTOMER_CODE,
+    CUST.CORPORATION_CODE as DIRECT_CORPORATION_CODE,
+    BKLG.INDIRECT_CUSTOMER_CODE,
+    
+    CASE 
+    WHEN (
+            (CUST.BUSINESS_CLASS_CODE = 'EMSI') OR 
+            (CUST.BUSINESS_CLASS_CODE = 'OEM' AND OEM_CORP.CORPORATION_CODE IS NOT NULL) OR
+            (CUST.BUSINESS_CLASS_CODE IN ('DIST','CIPO') AND CPNASIC.PRODUCT_ID IS NOT NULL)
+        )
+    THEN 
+        CASE 
+            WHEN DIR_CORP.CORPORATION_CODE IS NOT NULL THEN 'COICustomer'
+            WHEN CORP_COI_CORP.CORPORATION_CODE IS NOT NULL THEN 'COICorporation'
+            WHEN CUST.CORPORATION_CODE IS NOT NULL THEN 'NoCOI-Using DIRCoproration'
+            ELSE 'Not Defined' 
+        END
+	ELSE 'SUBCorp' 
+	END AS END_CORPORATION_DEFINITION,
+    BKLG.PROCESS_DATE,
+    '{{param_start_dttm}}'::TIMESTAMP_NTZ BIW_INS_DTTM ,
+	'{{param_start_dttm}}'::TIMESTAMP_NTZ BIW_UPD_DTTM ,
+	{{param_batch_id}} as BIW_BATCH_ID   ,
+    md5(
+        object_construct ('col1',DIRECT_CUSTOMER_KEY,	'col2',INDIRECT_CUSTOMER_KEY,		    'col3',DIRECT_CORPORATION_KEY,
+        'col4',INDIRECT_CORPORATION_CODE,		        'col5',INDIRECT_CORPORATION_KEY,	    'col6',END_CORPORATION_KEY,
+        'col7',ADJUSTED_END_CORPORATION_CODE,	        'col8',ADJUSTED_END_CORPORATION_KEY,	'col9',REFERENCE_CORPORATION_CODE,
+        'col10',REFERENCE_CORPORATION_KEY,		        'col11',DIRECT_CUSTOMER_CODE,		    'col12',DIRECT_CORPORATION_CODE,
+        'col13',INDIRECT_CUSTOMER_CODE,		            'col14',END_CORPORATION_CODE,		    'col15',END_CORPORATION_DEFINITION,
+        'col16',PROCESS_DATE)::string 
+        ) as BIW_MD5_KEY 
+FROM MART_BKLG BKLG
+-- --SNOWFLAKE objects are joined using md5 keys and SDM/DWH Oracle objects are joined using NK
+LEFT JOIN MART_CUST CUST
+    ON BKLG.DIRECT_CUSTOMER_KEY=CUST.CUSTOMER_KEY
+
+LEFT JOIN  DATAWARE_COI DIR_COI
+    ON BKLG.CUSTOMER_PART_NUMBER = DIR_COI.CPN
+    AND BKLG.MARKET_PRODUCT_NUMBER = DIR_COI.MPN 
+    AND BKLG.PROCESS_DATE BETWEEN DIR_COI.EFFECTIVE_FROM_DT AND DIR_COI.EFFECTIVE_END_DT
+
+-------------CUSTOMER COI-------------
+    AND CUST.CUSTOMER_CODE = DIR_COI.CUSTOMER_CODE
+    AND DIR_COI.CORPORATION_OF_INTEREST <> 'COIW'   
+LEFT JOIN MART_CORP DIR_CORP
+    ON DIR_COI.CORPORATION_OF_INTEREST = DIR_CORP.CORPORATION_CODE
+
+LEFT JOIN  DATAWARE_COI CORP_COI
+    ON BKLG.CUSTOMER_PART_NUMBER = CORP_COI.CPN
+    AND BKLG.MARKET_PRODUCT_NUMBER = CORP_COI.MPN 
+    AND BKLG.PROCESS_DATE BETWEEN CORP_COI.EFFECTIVE_FROM_DT AND CORP_COI.EFFECTIVE_END_DT
+    
+-------------CORP COI-------------
+    AND CUST.CORPORATION_CODE = CORP_COI.CORPORATION_CODE
+    AND CORP_COI.CORPORATION_OF_INTEREST <> 'COIW'
+ LEFT JOIN MART_CORP CORP_COI_CORP
+    ON CORP_COI.CORPORATION_OF_INTEREST = CORP_COI_CORP.CORPORATION_CODE
+
+------------------- OEM CORP-------------------
+LEFT JOIN SDM_ALLOWED_CORP OEM_CORP
+    ON CUST.CORPORATION_CODE = OEM_CORP.CORPORATION_CODE
+
+LEFT JOIN SDM_CPNASIC CPNASIC
+    ON BKLG.MARKET_PRODUCT_NUMBER = CPNASIC.PRODUCT_ID
+
+-------------INDIRECT CUSTOMER-------------
+LEFT JOIN MART_CUST INDIR_CUST
+    ON BKLG.INDIRECT_CUSTOMER_CODE = INDIR_CUST.CUSTOMER_CODE
+LEFT JOIN MART_CORP END_CORP
+    ON INDIR_CUST.CUST_END_CORPORATION_CODE= END_CORP.CORPORATION_CODE
+
+------------- ADJUSTED END CORP WITH END CORP-------------
+LEFT JOIN  SDM_ADJ_END_CORP ADJ_CORP
+    ON BKLG.MARKET_PRODUCT_NUMBER = ADJ_CORP.PRODUCT_ID
+    AND BKLG.DIRECT_CUSTOMER_CODE = ADJ_CORP.DIR_CUST_CD
+    AND BKLG.INDIRECT_CUSTOMER_CODE = ADJ_CORP.IND_CUST_CD
+    AND BKLG.PROCESS_DATE BETWEEN ADJ_CORP.EFFECTIVE_FROM_DATE AND ADJ_CORP.EFFECTIVE_TO_DATE 
+    AND END_CORP.CORPORATION_CODE= ADJ_CORP.END_CORP_CD
+------------- ADJUSTED END CORP WITH INDIRECT CUSTOMER (WHICH IS END CORP) -------------
+LEFT JOIN  SDM_ADJ_END_CORP ADJ_CORP_INDIR_CUST
+    ON BKLG.MARKET_PRODUCT_NUMBER = ADJ_CORP_INDIR_CUST.PRODUCT_ID
+    AND BKLG.DIRECT_CUSTOMER_CODE = ADJ_CORP_INDIR_CUST.DIR_CUST_CD
+    AND BKLG.INDIRECT_CUSTOMER_CODE = ADJ_CORP_INDIR_CUST.IND_CUST_CD
+    AND BKLG.PROCESS_DATE BETWEEN ADJ_CORP_INDIR_CUST.EFFECTIVE_FROM_DATE AND ADJ_CORP_INDIR_CUST.EFFECTIVE_TO_DATE 
+    AND INDIR_CUST.CORPORATION_CODE= ADJ_CORP_INDIR_CUST.END_CORP_CD    
+    AND INDIR_CUST.CUST_END_CORPORATION_CODE IS NULL
+------------- ADJUSTED END CORP WITH DIRECT CUSTOMER -------------
+LEFT JOIN  SDM_ADJ_END_CORP ADJ_CORP_DIR_CUST
+    ON BKLG.MARKET_PRODUCT_NUMBER = ADJ_CORP_DIR_CUST.PRODUCT_ID
+    AND BKLG.PROCESS_DATE BETWEEN ADJ_CORP_DIR_CUST.EFFECTIVE_FROM_DATE AND ADJ_CORP_DIR_CUST.EFFECTIVE_TO_DATE 
+    AND ADJ_CORP_DIR_CUST.IND_CUST_CD IS NULL
+
+------------- REFERENCE CORP WITH END CORP-------------
+LEFT JOIN  SDM_REF_CORP REF_CORP
+    ON BKLG.MARKET_PRODUCT_NUMBER = REF_CORP.PRODUCT_ID
+    AND BKLG.DIRECT_CUSTOMER_CODE = REF_CORP.DIR_CUST_CD
+    AND BKLG.INDIRECT_CUSTOMER_CODE = REF_CORP.IND_CUST_CD
+    AND BKLG.PROCESS_DATE BETWEEN REF_CORP.EFFECTIVE_FROM_DATE AND REF_CORP.EFFECTIVE_TO_DATE 
+    AND END_CORP.CORPORATION_CODE= REF_CORP.END_CORP_CD
+------------- REFERENCE END CORP WITH INDIRECT CUSTOMER (WHICH IS END CORP) -------------
+LEFT JOIN  SDM_REF_CORP REF_CORP_INDIR_CUST
+    ON BKLG.MARKET_PRODUCT_NUMBER = REF_CORP_INDIR_CUST.PRODUCT_ID
+    AND BKLG.DIRECT_CUSTOMER_CODE = REF_CORP_INDIR_CUST.DIR_CUST_CD
+    AND BKLG.INDIRECT_CUSTOMER_CODE = REF_CORP_INDIR_CUST.IND_CUST_CD
+    AND BKLG.PROCESS_DATE BETWEEN REF_CORP_INDIR_CUST.EFFECTIVE_FROM_DATE AND REF_CORP_INDIR_CUST.EFFECTIVE_TO_DATE 
+    AND INDIR_CUST.CORPORATION_CODE= REF_CORP_INDIR_CUST.END_CORP_CD    
+    AND INDIR_CUST.CUST_END_CORPORATION_CODE IS NULL
+------------- REFERENCE END CORP WITH DIRECT CUSTOMER -------------
+LEFT JOIN  SDM_REF_CORP REF_CORP_DIR_CUST
+    ON BKLG.MARKET_PRODUCT_NUMBER = REF_CORP_DIR_CUST.PRODUCT_ID
+    AND BKLG.PROCESS_DATE BETWEEN REF_CORP_DIR_CUST.EFFECTIVE_FROM_DATE AND REF_CORP_DIR_CUST.EFFECTIVE_TO_DATE 
+    AND REF_CORP_DIR_CUST.IND_CUST_CD IS NULL
+{% endset %}
+{% if execute and flags.WHICH not in ( 'generate','rpc') %}
+       {% do run_query(query) %}
+{% endif %}       
+{% endmacro %}
