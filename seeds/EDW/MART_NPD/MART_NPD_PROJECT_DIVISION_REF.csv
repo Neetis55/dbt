@@ -1,0 +1,15 @@
+OLD_BUSINESS_UNIT,OLD_DIVISION_DESCRIPTION,NEW_BUSINESS_UNIT,NEW_DIVISION_DESCRIPTION,NEW_DIVISION_CODE,BIW_INS_DTTM,BIW_UPD_DTTM,BIW_BATCH_ID
+APG,ITP DIVISION,ASG,ISD Division,ISD,01/19/2023 00:00:00,01/19/2023 00:00:00,-1
+APG,POWER SOLUTIONS DIVISION,ASG,MCC Division,MCC,01/19/2023 00:00:00,01/19/2023 00:00:00,-1
+APG,SWM Division,ASG,ISD Division,ISD,01/19/2023 00:00:00,01/19/2023 00:00:00,-1
+ASG,Automotive Product Division,ASG,Automotive Products Division,AUT,01/19/2023 00:00:00,01/19/2023 00:00:00,-1
+ASG,ISD Division,ASG,ISD Division,ISD,01/19/2023 00:00:00,01/19/2023 00:00:00,-1
+ASG,MCC Division,ASG,MCC Division,MCC,01/19/2023 00:00:00,01/19/2023 00:00:00,-1
+ASG,WCS Division,ASG,WCS Division,WCS,01/19/2023 00:00:00,01/19/2023 00:00:00,-1
+ISG,Automotive Solutions Division,ISG,Automotive Solutions Division,ASD,01/19/2023 00:00:00,01/19/2023 00:00:00,-1
+ISG,CCD Division,ISG,Industrial and Commercial Solutions Division,ICS,01/19/2023 00:00:00,01/19/2023 00:00:00,-1
+ISG,Industrial and Commercial Solutions Division,ISG,Industrial and Commercial Solutions Division,ICS,01/19/2023 00:00:00,01/19/2023 00:00:00,-1
+PSG,Advanced Power Division,PSG,Advanced Power Division,APD,01/19/2023 00:00:00,01/19/2023 00:00:00,-1
+PSG,High Power Division,PSG,Advanced Power Division,APD,01/19/2023 00:00:00,01/19/2023 00:00:00,-1
+PSG,"Integrated Circuit, Protection and Signal Division",PSG,"Integrated Circuit, Protection and Signal Division",IPS,01/19/2023 00:00:00,01/19/2023 00:00:00,-1
+PSG,Protection and Signal Division,PSG,"Integrated Circuit, Protection and Signal Division",IPS,01/19/2023 00:00:00,01/19/2023 00:00:00,-1

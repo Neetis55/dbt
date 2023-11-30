@@ -1,0 +1,17 @@
+version: 2
+
+seeds:
+  - name: MART_NPD_STEP_REF
+    config:
+      enabled: true
+      tags: MART_NPD
+      schema: MART_NPD
+      alias: STEP_REF
+      full_refresh: true
+  - name: MART_NPD_PROJECT_DIVISION_REF
+    config:
+      enabled: true
+      tags: MART_NPD
+      schema: MART_NPD
+      alias: PROJECT_DIVISION_REF
+      full_refresh: true
