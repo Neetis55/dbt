@@ -2,7 +2,7 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'my_new_project'
+name: 'EDW'
 version: '1.0.0'
 config-version: 2
 
@@ -19,11 +19,23 @@ seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
+#for adhoc full load 
+vars:
+  is_backfill: false
+  is_full_ri_test: false # used in RI test, so that we can run full RI check override the where clause
+  refresh_start_ts: '1900-01-01 00:00:00'
+  refresh_end_ts: '9999-12-31 00:00:00'
+#database name
+  V_EDL_DEFAULT_DB : "{{ env_var('DBT_EDL_DB') }}" 
+  V_EDW_DEFAULT_DB : "{{ env_var('DBT_EDW_DB') }}"  
+  V_ANALYTICS_DEFAULT_DB: "{{ env_var('DBT_ANALYTICS_DB') }}"  
+  #for one time load flag to enable history load
+  is_one_time_load: false
+
 target-path: "target"  # directory which will store compiled SQL files
 clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
-
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
@@ -31,8 +43,8 @@ clean-targets:         # directories to be removed by `dbt clean`
 # In this example config, we tell dbt to build all models in the example/ directory
 # as tables. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
-models:
-  my_new_project:
-    # Applies to all files under models/example/
-    example:
-      materialized: view
+
+#Kali D 09-21-2022 DBT Artifacts to capture the logs and load into snowflake 
+on-run-end: "{{ dbt_artifacts.upload_results(results) }}"
+
+
