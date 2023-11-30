@@ -1,0 +1,74 @@
+--dbt run --full-refresh --select MART_SALES_SALES_TERRITORY_ARCHIVE
+--dbt run --select MART_SALES_SALES_TERRITORY_ARCHIVE
+{################# EDW Job Template Variables #################}
+{%-set v_pk_list = ['SALES_TERRITORY_KEY','SNAPSHOT_DATE' ]-%}
+{%-set v_house_keeping_column = ['BIW_INS_DTTM','BIW_UPD_DTTM','BIW_BATCH_ID','BIW_MD5_KEY']-%}
+{%-set v_all_column_list =  edw_get_column_list( ref('ETL_MART_SALES_SALES_TERRITORY') ) -%}
+{%-set v_update_column_list =  edw_get_quoted_column_list( ref('ETL_MART_SALES_SALES_TERRITORY') ,v_pk_list|list + ['BIW_INS_DTTM']|list) -%}
+--DBT Variable
+--SELECT {{v_all_column_list}}
+--SELECT {{v_update_column_list}}
+{################# Batch control insert and update SQL #################}
+{%- set v_dbt_job_name = 'DBT_MART_SALES_SALES_TERRITORY_ARCHIVE'-%}
+-- Step 1 Batch process info
+{%- set v_watermark = edw_batch_control(v_dbt_job_name,config.get('schema'),config.get('alias') ,config.get('tags'),config.get('materialized') ) -%}
+{%- set V_LWM = v_watermark[0] -%}
+{%- set V_HWM = v_watermark[1] -%}
+{%- set V_START_DTTM = v_watermark[2] -%}
+{%- set V_BIW_BATCH_ID = v_watermark[3] -%}
+{%- set v_sql_upd_success_batch = "CALL UTILITY.EDW_BATCH_SUCCESS_PROC('"~v_dbt_job_name~"')" -%}
+
+{{
+    config(
+         description = 'Building table SALES_TERRITORY dimension for sales mart '
+        ,transient=false
+        ,materialized='incremental'
+        ,schema ='MART_SALES'
+        ,alias='SALES_TERRITORY_ARCHIVE'
+        ,unique_key= v_pk_list
+        ,merge_update_columns = ['SALES_ORGANIZATION_CODE', 'SALES_ORGANIZATION_DESCRIPTION', 'SALES_REP_FIRM_NAME', 'SALES_OFFICE_CODE', 'SALES_OFFICE_NAME'
+                            , 'SALES_AREA_NAME', 'SALES_SUB_AREA_NAME', 'SALES_REGION_CODE', 'SALES_REGION_NAME'
+                            , 'BIW_UPD_DTTM', 'BIW_BATCH_ID', 'BIW_MD5_KEY']
+        ,tags ='MART_SALES'
+        ,post_hook= [v_sql_upd_success_batch]
+        )
+}}
+
+WITH SALES_DATA as
+( select 	 
+    md5(SALES_ORGANIZATION_CODE) AS SALES_TERRITORY_KEY,
+    CURRENT_DATE AS SNAPSHOT_DATE,
+	  SALES_ORGANIZATION_CODE,
+    SALES_ORGANIZATION_DESCRIPTION,
+    SALES_REP_FIRM_NAME,
+    SALES_OFFICE_CODE,
+    SALES_OFFICE_NAME,
+    SALES_AREA_NAME,
+    SALES_SUB_AREA_NAME,
+    SALES_REGION_CODE,
+    SALES_REGION_NAME,
+    '{{V_START_DTTM}}'::TIMESTAMP_NTZ BIW_INS_DTTM ,
+    '{{V_START_DTTM}}'::TIMESTAMP_NTZ BIW_UPD_DTTM ,
+    {{V_BIW_BATCH_ID}}	 as BIW_BATCH_ID,
+    BIW_MD5_KEY
+    from	
+{{ ref('ETL_MART_SALES_SALES_TERRITORY') }}
+  )
+  select
+    SALES_TERRITORY_KEY,
+	  SNAPSHOT_DATE,
+    SALES_ORGANIZATION_CODE,
+    SALES_ORGANIZATION_DESCRIPTION,
+    SALES_REP_FIRM_NAME,
+    SALES_OFFICE_CODE,
+    SALES_OFFICE_NAME,
+    SALES_AREA_NAME,
+    SALES_SUB_AREA_NAME,
+    SALES_REGION_CODE,
+    SALES_REGION_NAME,
+    BIW_INS_DTTM ,
+    BIW_UPD_DTTM ,
+    BIW_BATCH_ID,  
+    BIW_MD5_KEY
+  from
+  SALES_DATA

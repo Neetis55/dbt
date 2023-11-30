@@ -1,0 +1,56 @@
+--dbt run --full-refresh --select MART_SALES_PRODUCT_ARCHIVE 
+--dbt run --select MART_SALES_PRODUCT_ARCHIVE --vars 'is_one_time_load: True' 
+
+{################# EDW Job Template Variables #################}
+{%-set v_pk_list = ['PRODUCT_KEY','SNAPSHOT_DATE' ]-%}
+{%-set v_house_keeping_column = ['BIW_INS_DTTM','BIW_UPD_DTTM','BIW_BATCH_ID','BIW_MD5_KEY']-%}
+{%-set v_all_column_list =  edw_get_column_list( ref('ETL_MART_SALES_PRODUCT') ) -%}
+{%-set v_update_column_list =  edw_get_quoted_column_list( ref('ETL_MART_SALES_PRODUCT') ,v_pk_list|list + ['BIW_INS_DTTM']|list) -%}
+--DBT Variable
+--SELECT {{v_all_column_list}}
+--SELECT {{v_update_column_list}}
+{################# Batch control insert and update SQL #################}
+{%- set v_dbt_job_name = 'DBT_MART_SALES_PRODUCT_ARCHIVE'-%}
+-- Step 1 Batch process info
+{%- set v_watermark = edw_batch_control(v_dbt_job_name,config.get('schema'),config.get('alias') ,config.get('tags'),config.get('materialized') ) -%}
+{%- set V_LWM = v_watermark[0] -%}
+{%- set V_HWM = v_watermark[1] -%}
+{%- set V_START_DTTM = v_watermark[2] -%}
+{%- set V_BIW_BATCH_ID = v_watermark[3] -%}
+{%- set v_sql_upd_success_batch = "CALL UTILITY.EDW_BATCH_SUCCESS_PROC('"~v_dbt_job_name~"')" -%}
+
+{{
+    config(
+         description = 'Building table PRODUCT dimension for Mart Sales'
+        ,transient=false
+        ,materialized='incremental'
+        ,schema ='MART_SALES'
+        ,alias='PRODUCT_ARCHIVE'
+        ,unique_key= v_pk_list
+        ,merge_update_columns =['PRODUCT_ID', 'DATA_SOURCE', 'NPD_BUCKET','IS_WEB_VISIBLE','WEB_PART_NAME','WEB_PART_GROUP', 
+                               'MOQ_QUANTITY','PART_OID_AK_ID','CREATED_DATE','BIW_UPD_DTTM','BIW_BATCH_ID','BIW_MD5_KEY']
+        ,tags ='MART_SALES'
+        ,post_hook= [v_sql_upd_success_batch]
+        )
+}} 
+SELECT 
+    md5(PRODUCT_ID) as PRODUCT_KEY,
+    current_date as SNAPSHOT_DATE,
+    PRODUCT_ID, 
+    DATA_SOURCE, 
+    NPD_BUCKET, 
+    IS_WEB_VISIBLE, 
+    WEB_PART_NAME,
+    WEB_PART_GROUP,
+    MOQ_QUANTITY,
+    PART_OID_AK_ID,
+    CREATED_DATE,
+    '{{V_START_DTTM}}'::TIMESTAMP_NTZ BIW_INS_DTTM ,
+    '{{V_START_DTTM}}'::TIMESTAMP_NTZ BIW_UPD_DTTM ,
+    {{V_BIW_BATCH_ID}}	 as BIW_BATCH_ID,
+    BIW_MD5_KEY
+FROM 
+{{ref('ETL_MART_SALES_PRODUCT')}}
+
+
+
