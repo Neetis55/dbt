@@ -1,0 +1,39 @@
+version: 2
+#https://docs.getdbt.com/docs/building-a-dbt-project/using-sources
+#--------------# Source Objects Related to PROCUREMENT DATA DISCOVERY #--------------#
+sources:
+
+#--------------# PROCUREMENT Staging to ANALYTICS #--------------#
+  - name: STG_EBS_PO
+    tags: ['PROCUREMENT']
+    schema: STG_EBS_PO
+    tables:
+      - name: PO_HEADERS_ALL
+      - name: PO_LINES_ALL
+      - name: PO_LINE_LOCATIONS_ALL
+      - name: PO_DISTRIBUTIONS_ALL
+
+#--------------# PROCUREMENT Staging to ANALYTICS #--------------#
+  - name: STG_EBS_AP
+    tags: ['PROCUREMENT']
+    schema: STG_EBS_AP
+    tables:
+      - name: AP_BATCHES_ALL
+      - name: AP_TERMS_TL
+      - name: AP_INVOICES_ALL
+      - name: AP_INVOICE_LINES_ALL
+      - name: AP_INVOICE_PAYMENTS_ALL
+      - name: AP_SUPPLIERS
+      - name: AP_SUPPLIER_SITES_ALL
+
+  - name: STG_EBS_APPS
+    tags: ['PROCUREMENT']
+    schema: STG_EBS_APPS
+    tables:
+      - name: AP_PAYMENT_HISTORY_ALL
+      - name: AP_PAYMENT_SCHEDULES_ALL
+      - name: AP_CHECKS_ALL
+      - name: MTL_SYSTEM_ITEMS_FVL
+
+
+

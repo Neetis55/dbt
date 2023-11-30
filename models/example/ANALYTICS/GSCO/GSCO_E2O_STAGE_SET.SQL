@@ -1,0 +1,43 @@
+{{ config(
+  description = 'E2open view for E2O_STAGE_SET table', 
+  materialized = 'view', 
+  schema = 'GSCO', 
+  tags = ['E2OPEN'],
+  alias = 'E2O_STAGE_SET'
+) }} 
+
+SELECT 
+    STAGE_SET_KEY,
+    STAGE_SET, 
+    LOCATION, 
+    COUNTRY_CODE, 
+    STAGE_SET_TYPE, 
+    STAGE_SET_DESCRIPTION, 
+    MFG_PROCESS, 
+    VALID_QUANTITY_LOCATION, 
+    UOM_IN_QUANTITY1, 
+    UOM_OUT_QUANTITY1, 
+    UOM_IN_QUANTITY2, 
+    UOM_OUT_QUANTITY2, 
+    BIN_LEVEL, 
+    BU_OWNER, 
+    AREA_NAME, 
+    MEMORY_TAG, 
+    MEMORY_TAG_VALUE, 
+    IN_TRANSIT_FLAG, 
+    SHIPPING_FLAG, 
+    STORE_FLAG, 
+    MEMORY_FLAG, 
+    HOLD_FLAG, 
+    DIE_BANK_FLAG, 
+    WAFER_BANK_FLAG, 
+    FUTURE_HOLD_FLAG, 
+    SORT_ORDER, 
+    CREATED_ON_UDT, 
+    CREATED_BY, 
+    UPDATED_ON_UDT, 
+    UPDATED_BY, 
+    BIW_INS_DTTM, 
+    BIW_UPD_DTTM, 
+    BIW_BATCH_ID
+FROM {{ref('MART_E2OPEN_E2O_STAGE_SET')}}
