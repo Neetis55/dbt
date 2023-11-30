@@ -1,0 +1,30 @@
+version: 2
+
+models:
+####################### ORGANIZATION TESTING #####################################
+  - name: MART_ORGANIZATION
+    columns:
+     - name:  ORGANIZATION_KEY
+       tests:
+         - unique
+         - not_null
+####################### MART_AD_USER TESTING #####################################
+  - name: MART_AD_USER
+    columns:
+     - name:  USERID
+       tests:
+         - unique
+         - not_null    
+
+##############################################################################
+####################### SNAPSHOT TESTING #####################################
+##############################################################################
+snapshots :
+####################### 1. MART_AD_USER TESTING #####################################
+  - name: MART_AD_USER_HIST
+    columns:
+    - name:  USERID||'--'||DBT_VALID_FROM
+      tests:
+        - unique
+        - not_null
+

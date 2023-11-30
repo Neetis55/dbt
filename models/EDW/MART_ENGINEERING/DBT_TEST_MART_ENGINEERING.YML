@@ -1,0 +1,21 @@
+version: 2
+
+models:
+####################### PART TESTING #####################################
+  - name: MART_ENGINEERING_PART
+    columns:
+     - name:  PART_KEY
+       tests:
+         - unique
+         - not_null
+##############################################################################
+####################### SNAPSHOT TESTING #####################################
+##############################################################################
+snapshots :
+####################### PART TESTING #####################################
+  - name: MART_ENGINEERING_PART_HIST
+    columns:
+    - name:  PART_KEY||'--'||DBT_VALID_FROM
+      tests:
+        - unique
+        - not_null

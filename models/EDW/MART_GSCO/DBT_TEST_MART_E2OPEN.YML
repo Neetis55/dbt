@@ -1,0 +1,61 @@
+version: 2
+
+models:
+####################### 1.MART_E2OPEN_E2O_STAGE_SET TESTING #####################################
+  - name: MART_E2OPEN_E2O_STAGE_SET
+    columns:
+     - name:  STAGE_SET_KEY
+       tests:
+         - unique
+         - not_null
+####################### 2.MART_E2OPEN_E2O_LOT_TRANSACTION TESTING #####################################
+  - name: MART_E2OPEN_E2O_LOT_TRANSACTION
+    columns:
+     - name:  LOT_TRANSACTION_KEY
+       tests:
+         - unique
+         - not_null
+####################### 3.MART_E2OPEN_E2O_SET_XREF TESTING #####################################
+  - name: MART_E2OPEN_E2O_SET_XREF
+    columns:
+     - name:  SUPPLIER_ENTITY_KEY
+       tests:
+         - unique
+         - not_null 
+####################### 4.MART_E2OPEN_E2O_LOT TESTING #####################################
+  - name: MART_E2OPEN_E2O_LOT
+    columns:
+     - name:  LOT_KEY
+       tests:
+         - unique
+         - not_null          
+####################### 5.MART_E2OPEN_E2O_LOT_TRANSACTION_DETAIL_FACT TESTING #####################################
+  - name: MART_E2OPEN_E2O_LOT_TRANSACTION_DETAIL_FACT
+    columns:
+     - name:  LOT_TRANSACTION_KEY
+       tests:
+         - unique
+         - not_null     
+
+####################### 6.MART_E2OPEN_E2O_WIP_INVENTORY_DAILY_FACT TESTING #####################################
+  - name: MART_E2OPEN_E2O_WIP_INVENTORY_DAILY_FACT
+    columns:
+     - name:  SYSTEM_LOT_NUMBER||'--'||SNAPSHOT_DATE_KEY
+       tests:
+         - unique
+         - not_null 
+snapshots :
+####################### 1.MART_E2OPEN_E2O_STAGE_SET_HISTORY TESTING #####################################
+  - name: MART_E2OPEN_E2O_STAGE_SET_HISTORY
+    columns:
+    - name:  STAGE_SET_KEY||'--'||DBT_VALID_FROM
+      tests:
+        - unique
+        - not_null
+####################### 2.MART_E2OPEN_E2O_LOT_HISTORY TESTING #####################################
+  - name: MART_E2OPEN_E2O_LOT_HISTORY
+    columns:
+    - name:  LOT_KEY||'--'||DBT_VALID_FROM
+      tests:
+        - unique
+        - not_null
