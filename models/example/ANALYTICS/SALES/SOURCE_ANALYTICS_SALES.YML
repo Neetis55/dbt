@@ -1,0 +1,37 @@
+version: 2
+#https://docs.getdbt.com/docs/building-a-dbt-project/using-sources
+#--------------# Source Objects Related to MART_SALES #--------------#
+sources:
+
+#--------------# EBS Staging to ETL #--------------#
+  - name: ENTERPRISE
+    tags: ['MART_SALES']
+    database : "{{env_var('DBT_ANALYTICS_DB') ~ env_var('DBT_DEP_ENV')}}"
+    schema: ENTERPRISE
+    tables:
+      - name: DATE
+      - name: FISCAL_WEEK
+#---------------------# CADSDEV #----------------------------#
+  - name: PROJ_OPTR
+    tags: ['MART_SALES']
+    database : "{{env_var('DBT_CADS_DB')}}"
+    schema: PROJ_OPTR
+    tables:
+      - name: FUNNEL_RATINGS
+
+#---------------------# SHAREPOINT #----------------------------#
+  - name: STG_SHAREPOINT_MDL
+    tags: ['MART_ENGINEERING']
+    schema: STG_SHAREPOINT_MDL
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: COMPETITOR_XREF
+      - name: DMASS_MAPPING
+      - name: DIST_BRANCH_SC_POSTOBRANCH_MAP
+      - name: ASIA_DIST_ACCOUNTS
+      - name: BRANCH_FOCUS_ACCOUNT
+      - name: DSM_AND_ADSM_BRANCH_MAPPING
+      
