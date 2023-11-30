@@ -1,0 +1,88 @@
+version: 2
+
+models:
+####################### ETL_MART_SALES_POS_FACT_FCS_ONE_TIME_LOAD TESTING #####################################
+  - name: ETL_MART_SALES_POINT_OF_SALES_FACT_FCS_ONE_TIME_LOAD
+    columns:
+     - name:  TRANSACTION_KEY
+       tests:
+         - unique
+         - not_null
+
+####################### PRODUCT_FCS TESTING #####################################
+  - name: ETL_MART_SALES_PRODUCT_FCS_ONE_TIME_LOAD 
+    columns:
+     - name:  PRODUCT_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_SALES_BILLING_FACT_FCS_ONE_TIME_LOAD TESTING #####################################
+  - name: ETL_MART_SALES_BILLING_FACT_FCS_ONE_TIME_LOAD
+    columns:
+     - name:  BILLING_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_SALES_BILLING_FACT_QUANTENNA_ONE_TIME_LOAD TESTING #####################################
+  - name: ETL_MART_SALES_BILLING_FACT_QUANTENNA_ONE_TIME_LOAD
+    columns:
+     - name:  BILLING_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_SALES_BILLING_FACT_SDM_ONE_TIME_LOAD TESTING #####################################
+  - name: ETL_MART_SALES_BILLING_FACT_SDM_ONE_TIME_LOAD
+    columns:
+     - name:  BILLING_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_SALES_BACKLOG_FACT_HISTORY_ONE_TIME_LOAD TESTING #####################################
+  - name: ETL_MART_SALES_BACKLOG_FACT_HISTORY_ONE_TIME_LOAD
+    columns:
+     - name:  BACKLOG_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_SALES_CUSTOMER_DWH_ONE_TIME_LOAD TESTING #####################################
+  - name: ETL_MART_SALES_CUSTOMER_DWH_ONE_TIME_LOAD
+    columns:
+     - name:  CUSTOMER_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_SALES_CUSTOMER_FCS_ONE_TIME_LOAD TESTING #####################################
+  - name: ETL_MART_SALES_CUSTOMER_FCS_ONE_TIME_LOAD
+    columns:
+     - name:  CUSTOMER_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_SALES_BACKLOG_FACT_FCS_ONE_TIME_LOAD TESTING #####################################
+  - name: ETL_MART_SALES_BACKLOG_FACT_FCS_ONE_TIME_LOAD
+    columns:
+     - name:  BACKLOG_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_SALES_BACKLOG_FACT_QUANTENNA_ONE_TIME_LOAD TESTING #####################################
+  - name: ETL_MART_SALES_BACKLOG_FACT_QUANTENNA_ONE_TIME_LOAD
+    columns:
+     - name:  BACKLOG_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_SALES_CUSTOMER_GDMS_ONE_TIME_LOAD TESTING #####################################
+  - name: ETL_MART_SALES_CUSTOMER_GDMS_ONE_TIME_LOAD
+    columns:
+     - name:  CUSTOMER_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_SALES_FUNNEL_FACT_HISTORY_ONE_TIME_LOAD TESTING #####################################
+  - name: ETL_MART_SALES_FUNNEL_FACT_HISTORY_ONE_TIME_LOAD
+    columns:
+     - name:  FUNNEL_KEY
+       tests:
+         - unique
+         - not_null 

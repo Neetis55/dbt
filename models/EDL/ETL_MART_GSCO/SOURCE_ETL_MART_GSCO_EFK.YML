@@ -1,0 +1,13 @@
+version: 2
+#https://docs.getdbt.com/docs/building-a-dbt-project/using-sources
+#--------------# Source Objects Related to E2OPEN #--------------#
+sources:
+
+
+#--------------# EBS Staging to ETL #--------------#
+  - name: STG_EBS_APPS
+    tags: ['GSCO_EFK']
+    schema: STG_EBS_APPS
+    tables:
+      - name: XXON_INV_CHEMICAL_USAGE_V
+      - name: XXON_INV_WORKING_CAPITAL_V

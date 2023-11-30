@@ -1,0 +1,17 @@
+version: 2
+
+models:
+####################### 1.ETL_MART_ORGANIZATION TESTING #####################################
+  - name: ETL_MART_ORGANIZATION
+    columns:
+     - name: ORGANIZATION_ID
+       tests:
+         - unique
+         - not_null
+####################### 2.ETL_MART_AD_USER TESTING #####################################
+  - name: ETL_MART_AD_USER
+    columns:
+     - name: USERID
+       tests:
+         - unique
+         - not_null   

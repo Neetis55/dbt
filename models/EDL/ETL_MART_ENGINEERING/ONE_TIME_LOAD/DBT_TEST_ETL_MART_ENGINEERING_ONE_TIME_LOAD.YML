@@ -1,0 +1,24 @@
+version: 2
+
+models:
+####################### ETL_MART_ENGINEERING_PART_FCS_ONE_TIME_LOAD TESTING #####################################
+  - name: ETL_MART_ENGINEERING_PART_FCS_ONE_TIME_LOAD
+    columns:
+     - name:  PART_KEY
+       tests:
+         - unique
+         - not_null
+
+  - name: ETL_MART_ENGINEERING_PART_HIST_ONE_TIME_LOAD
+    columns:
+     - name:  PART_KEY
+       tests:
+         - unique
+         - not_null
+
+  - name: ETL_MART_ENGINEERING_DIM_PRODUCTS_ONE_TIME_LOAD
+    columns:
+     - name:  PART_KEY
+       tests:
+         - unique
+         - not_null

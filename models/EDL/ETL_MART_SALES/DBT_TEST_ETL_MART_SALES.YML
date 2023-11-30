@@ -1,0 +1,189 @@
+version: 2
+
+models:
+####################### OM_EP_LINEDOWN_ORDER_INFO TESTING #####################################
+  - name: ETL_MART_SALES_OM_EP_LINEDOWN_ORDER_INFO
+    columns:
+     - name:  LindownId
+       tests:
+         - unique
+         - not_null
+####################### OM_EP_LINEDOWN_INFO TESTING #####################################
+  - name: ETL_MART_SALES_OM_EP_LINEDOWN_INFO
+    columns:
+     - name:  LindownId
+       tests:
+         - unique
+         - not_null
+####################### SALES_TERRITORY TESTING #####################################
+  - name: ETL_MART_SALES_SALES_TERRITORY
+    columns:
+     - name:  SALES_ORGANIZATION_CODE
+       tests:
+         - unique
+         - not_null
+####################### CORPORATION TESTING #####################################
+  - name: ETL_MART_SALES_CORPORATION
+    columns:
+     - name:  CORPORATION_CODE
+       tests:
+         - unique
+         - not_null
+####################### CUSTOMER TESTING #####################################
+  - name: ETL_MART_SALES_CUSTOMER
+    columns:
+     - name:  CUSTOMER_CODE
+       tests:
+         - unique
+         - not_null
+####################### PRODUCT TESTING #####################################
+  - name: ETL_MART_SALES_PRODUCT
+    columns:
+     - name:  PRODUCT_ID
+       tests:
+         - unique
+         - not_null
+####################### BACKLOG FACT TESTING #####################################
+  - name: ETL_MART_SALES_BACKLOG_FACT
+    columns:
+     - name:  BACKLOG_KEY
+       tests:
+         - unique
+         - not_null
+####################### BACKLOG CUSTOMER BRIDGE TESTING #####################################
+  - name: ETL_MART_SALES_BACKLOG_CUSTOMER_BRIDGE
+    columns:
+     - name:  BACKLOG_KEY
+       tests:
+         - unique
+         - not_null
+####################### BILLING CUSTOMER BRIDGE  TESTING #####################################
+  - name: ETL_MART_SALES_BILLING_CUSTOMER_BRIDGE
+    columns:
+     - name:  BILLING_KEY
+       tests:
+         - unique
+         - not_null
+
+####################### BILLING FACT TESTING #####################################
+  - name: ETL_MART_SALES_BILLING_FACT
+    columns:
+     - name:  BILLING_KEY
+       tests:
+         - unique
+         - not_null
+####################### POS BILLING FACT  TESTING #####################################
+  - name: ETL_MART_SALES_POINT_OF_SALES_BILLING_FACT
+    columns:
+     - name:  TRANSACTION_KEY
+       tests:
+         - unique
+         - not_null
+####################### POS MODELN FACT  TESTING #####################################
+  - name: ETL_MART_SALES_POINT_OF_SALES_MODELN_FACT
+    columns:
+     - name:  TRANSACTION_ID
+       tests:
+         - unique
+         - not_null
+####################### POS FACT  TESTING #####################################
+  - name: ETL_MART_SALES_POINT_OF_SALES_FACT
+    columns:
+     - name:  TRANSACTION_KEY
+       tests:
+         - unique
+         - not_null
+####################### POS CUSTOMER BRIDGE  TESTING #####################################
+  - name: ETL_MART_SALES_POINT_OF_SALES_CUSTOMER_BRIDGE
+    columns:
+     - name:  TRANSACTION_ID
+       tests:
+         - unique
+         - not_null
+####################### FUNNEL FACT  TESTING #####################################
+  - name: ETL_MART_SALES_FUNNEL_FACT
+    columns:
+     - name:  FUNNEL_KEY
+       tests:
+         - unique
+         - not_null
+####################### BILLING FACT CC TESTING #####################################
+  - name: ETL_MART_SALES_BILLING_FACT_SRC
+    columns:
+     - name:  BILLING_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_SALES_BACKLOG_FACT_SRC  TESTING #####################################
+  - name: ETL_MART_SALES_BACKLOG_FACT_SRC
+    columns:
+     - name:  BACKLOG_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_SALES_BACKLOG_FACT_FORECAST  TESTING #####################################
+  - name: ETL_MART_SALES_BACKLOG_FACT_FORECAST
+    columns:
+     - name:  BACKLOG_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_SALES_BACKLOG_FACT_NONFORECAST  TESTING #####################################
+  - name: ETL_MART_SALES_BACKLOG_FACT_NONFORECAST
+    columns:
+     - name:  BACKLOG_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_SALES_PRODUCT_PRICE_WORKSHEET_HIST TESTING #####################################
+  - name: ETL_MART_SALES_PRODUCT_PRICE_WORKSHEET_HIST
+    columns:
+     - name:  GPS_KEY
+       tests:
+         - unique
+         - not_null  
+####################### ETL_MART_SALES_PRODUCT_WEB_DOCUMENT TESTING #####################################        
+  - name: ETL_MART_SALES_PRODUCT_WEB_DOCUMENT
+    columns:
+     - name:  PRODUCT_WEB_DOCUMENT_KEY
+       tests:
+         - unique
+         - not_null    
+####################### ETL_MART_SALES_PRODUCT_LEADTIME_FACT TESTING #####################################
+  - name: ETL_MART_SALES_PRODUCT_LEADTIME_FACT
+    columns:
+     - name:  PRODUCT_LEADTIME_KEY
+       tests:
+         - unique
+         - not_null
+
+####################### ETL_MART_SALES_PRODUCT_CLASSIFICATION_FACT TESTING #####################################
+  - name: ETL_MART_SALES_PRODUCT_CLASSIFICATION_FACT
+    columns:
+     - name:  MARKET_PRODUCT_NUMBER_KEY
+       tests:
+         - unique
+         - not_null        
+         
+####################### ETL_MART_SALES_SAMPLE_FACT TESTING #####################################
+  - name: ETL_MART_SALES_SAMPLE_FACT
+    columns:
+     - name:  SAMPLE_KEY
+       tests:
+         - unique
+         - not_null
+####################### CUSTOMER_MODELN TESTING #####################################
+  - name: ETL_MART_SALES_CUSTOMER_MODELN
+    columns:
+     - name:  CUSTOMER_CODE
+       tests:
+         - unique
+         - not_null
+####################### CUSTOMER_EBS TESTING #####################################
+  - name: ETL_MART_SALES_CUSTOMER_EBS
+    columns:
+     - name:  CUSTOMER_CODE
+       tests:
+         - unique
+         - not_null                  
+         

@@ -1,0 +1,28 @@
+version: 2
+
+models:
+####################### PART TESTING #####################################
+  - name: ETL_MART_ENGINEERING_PART_AGILE
+    columns:
+     - name:  PART_ID
+       tests:
+         - unique
+         - not_null
+  - name: ETL_MART_ENGINEERING_PART_APS
+    columns:
+     - name:  PART_ID
+       tests:
+         - unique
+         - not_null
+  - name: ETL_MART_ENGINEERING_PART_MAINFRAME
+    columns:
+     - name:  PART_ID
+       tests:
+         - unique
+         - not_null
+  - name: ETL_MART_ENGINEERING_PART
+    columns:
+     - name:  PART_ID
+       tests:
+         - unique
+         - not_null

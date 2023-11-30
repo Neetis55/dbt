@@ -1,0 +1,50 @@
+version: 2
+#https://docs.getdbt.com/docs/building-a-dbt-project/using-sources
+#--------------# Source Objects Related to MART ENGINEERING #--------------#
+
+sources:
+  - name:  STG_NPD_MSPROJECTS_ODATAV1
+    tags: ['MART_NPD']
+    schema: STG_NPD_MSPROJECTS_ODATAV1
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: ASSIGNMENTBASELINES
+      - name: ASSIGNMENTTIMEPHASEDDATASET
+      - name: BUSINESSDRIVERDEPARTMENTS
+      - name: TIMESHEETCLASSES
+      - name: TIMESHEETLINES
+      - name: TASKBASELINETIMEPHASEDDATASET
+      - name: TIMESHEETLINEACTUALDATASET
+      - name: TIMESHEETPERIODS
+      - name: ASSIGNMENTBASELINETIMEPHASEDDATASET
+      - name: DELIVERABLES
+      - name: ENGAGEMENTS
+      - name: FISCALPERIODS
+      - name: ISSUES
+      - name: PRIORITIZATIONS
+      - name: PROJECTBASELINES
+      - name: RESOURCECONSTRAINTSCENARIOS
+      - name: RESOURCES
+      - name: TASKBASELINES
+      - name: TIMESET
+      - name: ENGAGEMENTSCOMMENTS
+      - name: ENGAGEMENTSTIMEPHASEDDATASET
+      - name: RESOURCEDEMANDTIMEPHASEDDATASET
+      - name: COSTCONSTRAINTSCENARIOS
+      - name: PORTFOLIOANALYSES
+      - name: PRIORITIZATIONDRIVERRELATIONS
+      - name: PROJECTWORKFLOWSTAGEDATASET
+      - name: RESOURCESCENARIOPROJECTS
+      - name: RESOURCETIMEPHASEDDATASET
+      - name: TIMESHEETS
+      - name: PORTFOLIOANALYSISPROJECTS
+      - name: RISKTASKASSOCIATIONS
+      - name: RISKS
+      - name: BUSINESSDRIVERS
+      - name: COSTSCENARIOPROJECTS
+      - name: ISSUETASKASSOCIATIONS
+      - name: TASKTIMEPHASEDDATASET
+      - name: PRIORITIZATIONDRIVERS

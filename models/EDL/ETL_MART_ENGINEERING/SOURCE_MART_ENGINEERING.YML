@@ -1,0 +1,182 @@
+version: 2
+#https://docs.getdbt.com/docs/building-a-dbt-project/using-sources
+#--------------# Source Objects Related to MART ENGINEERING #--------------#
+
+sources:
+#--------------# Staging to ETL #--------------#
+  - name: STG_PDM_PRODCENT
+    tags: ['MART_ENGINEERING']
+    schema: STG_PDM_PRODCENT
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: PART
+      - name: PACKING_CONFIGURATION
+      - name: CUSTOMS_CONFIG
+      - name: WAFER_TECH_VARIANT
+      - name: ENG_WAFER_TECH_TYPE
+      - name: CASE_OUTLINE_VARIANT
+      - name: ENG_PKG_TYPE
+
+  - name: STG_PLAN_APSWEB_OWNER
+    tags: ['MART_ENGINEERING']
+    schema: STG_PLAN_APSWEB_OWNER
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: ITEM_ATTR_O
+      - name: ODSTOOM_PLAN_CONTACT_DIR
+      - name: AGL_APS_STAGE_XREF
+      - name: SC_STAGE_MASTER
+      - name: SC_STAGE_SEQUENCE
+  
+  - name: STG_EBS_APPS
+    tags: ['MART_ENGINEERING']
+    schema: STG_EBS_APPS
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: XXON_PAL_HIERARCHY
+      - name: XXON_FS_BU_RULE
+
+  - name: STG_MAINFRAME
+    tags: ['MART_ENGINEERING']
+    schema: STG_MAINFRAME
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: STG1_PTI_DAILY
+      - name: STG1_PART_STATUS
+      - name: STG1_PRODUCT_DAILY
+      - name: PRODUCT_CNTNR_SPEC_DTL_BASE
+      - name: PRODUCT_MORE_BASE
+      - name: STG1_PRODUCT_CLASS
+      - name: STG1_MFG_PACKAGE
+      
+
+  - name: STG_PLAN_APS_OWNER
+    tags: ['MART_ENGINEERING']
+    schema: STG_PLAN_APS_OWNER
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: CWB_PACKAGE_GROUP_XREF
+      - name: LT_HISTORY_DETAIL_ALL
+      - name: PART_SITES
+      - name: PART_FE_ATTRS
+      - name: PART_ATTRS
+      - name: ITEMMASTER
+      - name: CCD_PART_CONSTR_COLOR_OVERRIDE
+      - name: APSTORR_PART_ATTR
+      - name: CCD_PART_CONSTR_COLOR_CURR
+      - name: ON_BOMROUTING
+
+
+  - name: STG_DWH_IO
+    tags: ['MART_ENGINEERING']
+    schema: STG_DWH_IO
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: ITEM
+
+
+  - name: STG_PLAN_DM_RFORECASTING
+    tags: ['MART_ENGINEERING']
+    schema: STG_PLAN_DM_RFORECASTING
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: MLQ_CURR_TBL
+      - name: CCD_PART_CONSTR_COLOR_HIST
+
+  - name: STG_DWH_DATAWARE
+    tags: ['MART_ENGINEERING']
+    schema: STG_DWH_DATAWARE
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: PAL
+      - name: PTI_BASE
+
+  - name: STG_ONE_STAGE
+    tags: ['MART_ENGINEERING']
+    schema: STG_ONE_STAGE
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: SD_USERID
+      - name: STG1_ONDEX_MDW_STAGE
+      - name: STG1_PACKAGE_CODES
+      - name: STG1_AMI_ON_QUAL_STATUS_XREF
+      - name: STG1_QUAL_TYPE_XREF
+
+
+  - name: STG_DWH_BIWSTAGE
+    tags: ['MART_ENGINEERING']
+    schema: STG_DWH_BIWSTAGE
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: SUBTYPE_FE_BE_FLG
+
+  - name: STG_DOCSERV
+    tags: ['MART_ENGINEERING']
+    schema: STG_DOCSERV
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: DOCUMENT
+
+  - name: STG_GPS2_GPS_ADMIN
+    tags: ['MART_ENGINEERING']
+    schema: STG_GPS2_GPS_ADMIN
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: STG_PRICE_OUT
+
+  - name: STG_DWH_MARTS
+    tags: ['MART_ENGINEERING']
+    schema: STG_DWH_MARTS
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: PART_DIM
+
+  - name: STG_SDM_PRESENTATION
+    tags: ['MART_ENGINEERING']
+    schema: STG_SDM_PRESENTATION
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: DIM_PRODUCTS
+

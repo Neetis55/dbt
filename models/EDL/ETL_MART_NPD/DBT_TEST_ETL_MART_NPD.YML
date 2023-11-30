@@ -1,0 +1,45 @@
+version: 2
+
+models:
+####################### ETL_MART_NPD_PROJECTS_RISK_RPT TESTING #####################################
+  - name: ETL_MART_NPD_PROJECTS_RISK_RPT
+    columns:
+     - name:  PROJECT_RISK_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_NPD_PROJECTS_SUMMARY_RPT TESTING #####################################
+  - name: ETL_MART_NPD_PROJECTS_SUMMARY_RPT
+    columns:
+     - name:  PROJECT_SUMMARY_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_NPD_PROJECTS_TASK_RPT TESTING #####################################
+  - name: ETL_MART_NPD_PROJECTS_TASK_RPT
+    columns:
+     - name:  MSPROJECT_TASK_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_NPD_PROJECTS_SCHEDULE_SUMMARY_RPT TESTING #####################################
+  - name: ETL_MART_NPD_PROJECTS_SCHEDULE_SUMMARY_RPT
+    columns:
+     - name:  PROJECT_SCHEDULE_SUMMARY_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_NPD_PROJECTS_JIRA_CREATED_VS_RESOLVED_RPT TESTING #####################################
+  - name: ETL_MART_NPD_PROJECTS_JIRA_CREATED_VS_RESOLVED_RPT
+    columns:
+     - name:  PROJECT_JIRA_CREATED_VS_RESOLVED_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_MART_NPD_PROJECTS_JIRA_ISSUES_RPT TESTING #####################################
+  - name: ETL_MART_NPD_PROJECTS_JIRA_ISSUES_RPT
+    columns:
+     - name:  PROJECT_JIRA_ISSUES_KEY
+       tests:
+         - unique
+         - not_null

@@ -1,0 +1,23 @@
+version: 2
+#https://docs.getdbt.com/docs/building-a-dbt-project/using-sources
+#--------------# Source Objects Related to ETL Process #--------------#
+
+sources:
+#--------------# Snowflake Organization stage tables #--------------#
+  - name: STG_EBS_APPS
+    tags: ['MART']
+    schema: STG_EBS_APPS
+    tables:
+      - name: HR_ORGANIZATION_UNITS
+      - name: MTL_PARAMETERS
+      - name: ORG_ORGANIZATION_DEFINITIONS
+      - name: HR_LOCATIONS
+      - name: HR_OPERATING_UNITS
+
+#--------------# STG_ONDEX_GONDEX_USER stage tables #--------------#
+  - name: STG_ONDEX_GONDEX_USER
+    tags: ['MART']
+    schema: STG_ONDEX_GONDEX_USER
+    tables:
+      - name: STG1_ONDEX_MDW_STAGE 
+

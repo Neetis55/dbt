@@ -1,0 +1,12 @@
+version: 2
+#--------------# Source Objects Related to UTILITY #--------------#
+sources:
+#--------------# Snowflake Objects #--------------#
+  - name: ACCOUNT_USAGE
+    tags: ['ETL UTILITY']
+    database : SNOWFLAKE
+    schema: ACCOUNT_USAGE
+    tables:
+      - name: TABLE_STORAGE_METRICS
+      - name: QUERY_HISTORY
+      - name: WAREHOUSE_METERING_HISTORY

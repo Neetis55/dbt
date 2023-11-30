@@ -1,0 +1,46 @@
+version: 2
+
+models:
+####################### 1.ETL_MART_E2OPEN_E2O_STAGE_SET TESTING #####################################
+  - name: ETL_MART_E2OPEN_E2O_STAGE_SET
+    columns:
+     - name:  STAGE_SET
+       tests:
+         - unique
+         - not_null
+####################### 2.ETL_MART_E2OPEN_E2O_LOT_TXN_DTL TESTING #####################################
+  - name: ETL_MART_E2OPEN_E2O_LOT_TXN_DTL
+    columns:
+     - name:  LOT_TRANSACTION_ID
+       tests:
+         - unique
+         - not_null
+####################### 3.ETL_MART_E2OPEN_E2O_LOT_TXN_DTL_CMPLT TESTING #####################################
+  - name: ETL_MART_E2OPEN_E2O_LOT_TXN_DTL_CMPLT
+    columns:
+     - name:  LOT_TRANSACTION_ID||'--'||IS_GENERATED
+       tests:
+         - unique
+         - not_null
+####################### 4.ETL_MART_E2OPEN_E2O_LOT_TXN_DTL_DRVD TESTING #####################################
+  - name: ETL_MART_E2OPEN_E2O_LOT_TXN_DTL_DRVD
+    columns:
+     - name:  LOT_TRANSACTION_ID||'--'||SYSTEM_LOT_NUMBER
+       tests:
+         - unique
+         - not_null
+####################### 5.ETL_MART_E2OPEN_E2O_LOT_DTL TESTING #####################################
+  - name: ETL_MART_E2OPEN_E2O_LOT_DTL
+    columns:
+     - name:  SYSTEM_LOT_NUMBER
+       tests:
+         - unique
+         - not_null
+####################### 6.ETL_MART_E2OPEN_E2O_SET_XREF TESTING #####################################
+  - name: ETL_MART_E2OPEN_E2O_SET_XREF
+    columns:
+     - name:  SUPPLIER_ENTITY_NAME
+       tests:
+         - unique
+         - not_null
+

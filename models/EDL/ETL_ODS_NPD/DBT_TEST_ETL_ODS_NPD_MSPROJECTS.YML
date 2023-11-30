@@ -1,0 +1,284 @@
+version: 2
+
+models:
+
+####################### ETL_ODS_NPD_MSPROJECTS_ASSIGNMENTTIMEPHASEDDATASET_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_ASSIGNMENTTIMEPHASEDDATASET_WEEKLY_SNAPSHOT
+    columns:
+     - name:  ASSIGNMENTTIMEPHASEDDATASET_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_DELIVERABLES_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_DELIVERABLES_WEEKLY_SNAPSHOT
+    columns:
+     - name:  DELIVERABLES_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_ISSUES_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_ISSUES_WEEKLY_SNAPSHOT
+    columns:
+     - name:  ISSUES_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_PRIORITIZATIONDRIVERS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_PRIORITIZATIONDRIVERS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  PRIORITIZATIONDRIVERS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_PROJECTBASELINES_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_PROJECTBASELINES_WEEKLY_SNAPSHOT
+    columns:
+     - name:  PROJECTBASELINES_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_PROJECTWORKFLOWSTAGEDATASET_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_PROJECTWORKFLOWSTAGEDATASET_WEEKLY_SNAPSHOT
+    columns:
+     - name:  PROJECTWORKFLOWSTAGEDATASET_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_TASKS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_TASKS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  TASKS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_TIMESHEETLINEACTUALDATASET_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_TIMESHEETLINEACTUALDATASET_WEEKLY_SNAPSHOT
+    columns:
+     - name:  TIMESHEETLINEACTUALDATASET_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_TIMESHEETLINES_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_TIMESHEETLINES_WEEKLY_SNAPSHOT
+    columns:
+     - name:  TIMESHEETLINES_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_ISSUETASKASSOCIATIONS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_ISSUETASKASSOCIATIONS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  ISSUETASKASSOCIATIONS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_PROJECTS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_PROJECTS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  PROJECTS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_TIMESET_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_TIMESET_WEEKLY_SNAPSHOT
+    columns:
+     - name:  TIMESET_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_TIMESHEETS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_TIMESHEETS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  TIMESHEETS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_RESOURCEDEMANDTIMEPHASEDDATASET_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_RESOURCEDEMANDTIMEPHASEDDATASET_WEEKLY_SNAPSHOT
+    columns:
+     - name:  RESOURCEDEMANDTIMEPHASEDDATASET_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_COSTCONSTRAINTSCENARIOS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_COSTCONSTRAINTSCENARIOS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  COSTCONSTRAINTSCENARIOS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_COSTSCENARIOPROJECTS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_COSTSCENARIOPROJECTS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  COSTSCENARIOPROJECTS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_FISCALPERIODS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_FISCALPERIODS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  FISCALPERIODS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_RESOURCETIMEPHASEDDATASET_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_RESOURCETIMEPHASEDDATASET_WEEKLY_SNAPSHOT
+    columns:
+     - name:  RESOURCETIMEPHASEDDATASET_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_TASKBASELINES_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_TASKBASELINES_WEEKLY_SNAPSHOT
+    columns:
+     - name:  TASKBASELINES_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_ENGAGEMENTS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_ENGAGEMENTS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  ENGAGEMENTS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_RESOURCES_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_RESOURCES_WEEKLY_SNAPSHOT
+    columns:
+     - name:  RESOURCES_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_ASSIGNMENTBASELINES_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_ASSIGNMENTBASELINES_WEEKLY_SNAPSHOT
+    columns:
+     - name:  ASSIGNMENTBASELINES_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_BUSINESSDRIVERDEPARTMENTS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_BUSINESSDRIVERDEPARTMENTS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  BUSINESSDRIVERDEPARTMENTS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_ENGAGEMENTSCOMMENTS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_ENGAGEMENTSCOMMENTS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  ENGAGEMENTSCOMMENTS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_PORTFOLIOANALYSES_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_PORTFOLIOANALYSES_WEEKLY_SNAPSHOT
+    columns:
+     - name:  PORTFOLIOANALYSES_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_RESOURCESCENARIOPROJECTS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_RESOURCESCENARIOPROJECTS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  RESOURCESCENARIOPROJECTS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_TIMESHEETPERIODS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_TIMESHEETPERIODS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  TIMESHEETPERIODS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_PORTFOLIOANALYSISPROJECTS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_PORTFOLIOANALYSISPROJECTS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  PORTFOLIOANALYSISPROJECTS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_ASSIGNMENTBASELINETIMEPHASEDDATASET_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_ASSIGNMENTBASELINETIMEPHASEDDATASET_WEEKLY_SNAPSHOT
+    columns:
+     - name:  ASSIGNMENTBASELINETIMEPHASEDDATASET_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_ASSIGNMENTS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_ASSIGNMENTS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  ASSIGNMENTS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_BUSINESSDRIVERS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_BUSINESSDRIVERS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  BUSINESSDRIVERS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_ENGAGEMENTSTIMEPHASEDDATASET_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_ENGAGEMENTSTIMEPHASEDDATASET_WEEKLY_SNAPSHOT
+    columns:
+     - name:  ENGAGEMENTSTIMEPHASEDDATASET_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_PRIORITIZATIONDRIVERRELATIONS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_PRIORITIZATIONDRIVERRELATIONS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  PRIORITIZATIONDRIVERRELATIONS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_PRIORITIZATIONS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_PRIORITIZATIONS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  PRIORITIZATIONS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_RISKTASKASSOCIATIONS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_RISKTASKASSOCIATIONS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  RISKTASKASSOCIATIONS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_TASKBASELINETIMEPHASEDDATASET_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_TASKBASELINETIMEPHASEDDATASET_WEEKLY_SNAPSHOT
+    columns:
+     - name:  TASKBASELINETIMEPHASEDDATASET_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_TIMESHEETCLASSES_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_TIMESHEETCLASSES_WEEKLY_SNAPSHOT
+    columns:
+     - name:  TIMESHEETCLASSES_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_RESOURCECONSTRAINTSCENARIOS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_RESOURCECONSTRAINTSCENARIOS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  RESOURCECONSTRAINTSCENARIOS_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_TASKTIMEPHASEDDATASET_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_TASKTIMEPHASEDDATASET_WEEKLY_SNAPSHOT
+    columns:
+     - name:  TASKTIMEPHASEDDATASET_KEY
+       tests:
+         - unique
+         - not_null
+####################### ETL_ODS_NPD_MSPROJECTS_RISKS_WEEKLY_SNAPSHOT TESTING #####################################
+  - name: ETL_ODS_NPD_MSPROJECTS_RISKS_WEEKLY_SNAPSHOT
+    columns:
+     - name:  RISKS_KEY
+       tests:
+         - unique
+         - not_null

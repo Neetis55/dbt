@@ -1,0 +1,18 @@
+version: 2
+#https://docs.getdbt.com/docs/building-a-dbt-project/using-sources
+#--------------# Source Objects Related to ETL Process #--------------#
+
+sources:
+#--------------# Snowflake utility tables #--------------#
+  - name: UTILITY
+    tags: ['ETL PROCESS']
+    schema: UTILITY
+    tables:
+      - name: EDW_PROCESS_INFO
+      - name: EDW_PROCESS_BATCH_CTL
+#--------------# STG_DWH_BIWSTAGE stage tables for date dimension #--------------#
+  - name: STG_DWH_BIWSTAGE
+    tags: ['MART']
+    schema: STG_DWH_BIWSTAGE
+    tables:
+      - name: DATE_DIM_FISCAL     

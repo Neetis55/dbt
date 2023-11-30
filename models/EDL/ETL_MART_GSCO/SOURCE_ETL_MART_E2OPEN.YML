@@ -1,0 +1,14 @@
+version: 2
+#https://docs.getdbt.com/docs/building-a-dbt-project/using-sources
+#--------------# Source Objects Related to ETL Process #--------------#
+
+sources:
+#--------------# Snowflake e2open stage tables #--------------#
+  - name: STG_E2OPEN
+    tags: ['E2OPEN']
+    schema: STG_E2OPEN
+    tables:
+      - name: LOT_TXN_DTL
+      - name: STG_STAGE_SET
+      - name: STG_SET_XREF
+      

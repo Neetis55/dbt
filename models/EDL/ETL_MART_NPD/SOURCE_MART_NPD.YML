@@ -1,0 +1,78 @@
+version: 2
+#https://docs.getdbt.com/docs/building-a-dbt-project/using-sources
+#--------------# Source Objects Related to MART ENGINEERING #--------------#
+
+sources:
+#--------------# Staging to ETL #--------------#
+  - name: STG_SHAREPOINT_NPD
+    tags: ['MART_NPD']
+    schema: STG_SHAREPOINT_NPD
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: PM_DASHBOARD_ENTRY
+
+  - name: STG_PPM_ON02_NPD_MARTS
+    tags: ['MART_NPD']
+    schema: STG_PPM_ON02_NPD_MARTS
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: DIM_PPM_PROJECT_DTL
+      - name: BRIDGE_PPM_PROJECT_GROUP
+      - name: DIM_PPM_GROUP
+      - name: BRIDGE_PPM_PROJECT_DIVISION
+      - name: DIM_PPM_DIVISION
+      - name: DIM_PPM_GATE_DTL
+      - name: DIM_PPM_MILESTONE_DTL
+      - name: FACT_PPM_PTC_DTL
+      - name: BASELINE_REV_FLAG_REFERENCE
+      - name: DIM_PPM_BUSINESS_UNIT
+      - name: BRIDGE_PPM_PROJECT_BU
+
+  - name: STG_NPD_MSPROJECTS_ODATAV1
+    tags: ['MART_NPD']
+    schema: STG_NPD_MSPROJECTS_ODATAV1
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: PROJECTS
+      - name: TASKS
+      - name: ASSIGNMENTS
+
+  - name: STG_NPD_DBO
+    tags: ['MART_NPD']
+    schema: STG_NPD_DBO
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: OB_PROJLF
+      - name: OB_PROJPL
+
+  - name: STG_JIRA
+    tags: ['MART_NPD']
+    schema: STG_JIRA
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: NPD_ISSUES       
+
+  - name: STG_API_NPD
+    tags: ['MART_NPD']
+    schema: STG_API_NPD
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: AGILE_TO_JIRA      

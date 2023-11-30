@@ -1,0 +1,17 @@
+version: 2
+
+models:
+####################### 1.ETL_MART_GSCO_INVENTORY_WORKING_CAPITAL_WEEKLY_RPT TESTING #####################################
+  - name: ETL_MART_GSCO_INVENTORY_WORKING_CAPITAL_WEEKLY_RPT
+    columns:
+     - name:  WORKING_CAPITAL_WEEK_KEY
+       tests:
+         - unique
+         - not_null
+####################### 1.ETL_MART_GSCO_INVENTORY_WORKING_CAPITAL_MONTHLY_RPT TESTING #####################################
+  - name: ETL_MART_GSCO_INVENTORY_WORKING_CAPITAL_MONTHLY_RPT
+    columns:
+     - name:  WORKING_CAPITAL_MONTH_KEY
+       tests:
+         - unique
+         - not_null

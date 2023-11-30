@@ -1,0 +1,263 @@
+version: 2
+#https://docs.getdbt.com/docs/building-a-dbt-project/using-sources
+#--------------# Source Objects Related to MART_SALES #--------------#
+sources:
+
+#--------------# OUTSYS Staging to ETL #--------------#
+  - name: STG_OUTSYS
+    tags: ['MART_OUTSYS_SALES']
+    schema: STG_OUTSYS 
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: STG_OM_EP_LINEDOWN_INFO
+      - name: STG_OM_EP_LINEDOWN_ORDER_INFO
+
+#--------------# EBS Staging to ETL #--------------#
+  - name: STG_EBS_APPS
+    tags: ['MART_SALES']
+    schema: STG_EBS_APPS
+      #for now starting with default need to check with Brian
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: XXON_OM_CORP_DETAILS_V
+      - name: XXON_OM_CUSTOMER_DETAILS_V
+      - name: XXON_OM_CUSTOMER_CONTACTS_V
+      - name: XXON_OM_CUSTOMER_TYPE_V
+      - name: XXON_OM_HANDLING_METHOD_V
+      - name: XXON_INV_CUSTITEM_XREF_V
+      - name: BILL_ACTIVITY_ALL_OBR
+      - name: ORDER_DELIVERY
+      - name: ORDER_HDR
+      - name: ORDER_HOLD_STATUS
+      - name: BKLG_ACT_OBR
+      - name: XXON_OM_DEMAND_SHAPPING_RULES
+
+
+#--------------# MODELN Staging to ETL #--------------#
+  - name: STG_MODELN_PRICING_ADMIN
+    tags: ['MART_SALES']
+    schema: STG_MODELN_PRICING_ADMIN
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: SALES_TERRITORY
+      - name: SALES_OFFICE
+      - name: SALES_REGION
+      - name: PRO_USER
+      - name: COUNTRY_MAP
+      - name: POS_FISCAL_DATE_OVERRIDE
+      - name: SOCKET_STATUS_CHANGE_HIST
+
+  - name: STG_MODELN_PRICING_OWNER
+    tags: ['MART_SALES']
+    schema: STG_MODELN_PRICING_OWNER
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: ORG
+      - name: CUSTOMER
+      - name: ORG_CUST_MAPPING
+      - name: SEGMENT
+      - name: PART       
+      - name: CURRENCY_INFO
+      - name: ADDRESS
+      - name: POS_DATA
+      - name: DEBIT_SCHEDULE
+      - name: DESIGN_REG
+      - name: DESIGN_PART_MAPPING
+      - name: DESIGN_REG_HISTORY
+      - name: DISTRIBUTOR
+      - name: PROGRAM
+      - name: ASSEMBLY     
+      - name: FUNCTION   
+      - name: COMPETITOR
+      - name: DISTI_CORPORATE_ID
+      - name: DESIGN_CONFIDENCE
+      - name: DESIGN_REG_USER_MAPPING
+      - name: PRICE_POINT
+      - name: PRICE_POINT_FIELD
+      - name: PRICE_TABLE_DEFINITION
+
+  
+#--------------# Web Part Staging to ETL #--------------#    
+  - name: STG_WEBPRD_PUBLIC
+    tags: ['MART_SALES']
+    schema: STG_WEBPRD_PUBLIC
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: EWPC_BASE_PART
+      - name: EWPC_ORDERABLE_PART
+      - name: EWPC_NRND_REPLACEMENT
+      - name: EWPC_PART_DOCUMENT_SEC
+      - name: EWPC_PART_DOCUMENT
+      - name: EWPC_DOCUMENT_SEC
+      - name: EWPC_DOCUMENT
+      - name: EWPC_XREF_M1
+      - name: EWPC_XREF_M1_PART
+
+#--------------# FMS Staging to ETL #--------------#
+  - name: STG_FMS_FMS_OWNER
+    tags: ['MART_SALES']
+    schema: STG_FMS_FMS_OWNER
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: STG_LOC_DW_OUT
+      - name: STG_FCST_RSVTN_XREF_OUT
+      - name: FMS_SYNCH_QUEUE
+  
+#--------------# PCN Staging to ETL #--------------#
+  - name: STG_PCN_PUBLIC
+    tags: ['MART_SALES']
+    schema: STG_PCN_PUBLIC
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: TRANSPARENT_FLOW_XREF
+
+#--------------# MAINFRAME Files Staging to ETL #--------------#  
+  - name: STG_MAINFRAME
+    tags: ['MART_SALES']
+    schema: STG_MAINFRAME
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: CURRENCY 
+      - name: STG1_CURRENCY_EXCHANGE
+
+
+#--------------# Sharepoint source to ETL #--------------#
+  - name: STG_SHAREPOINT_MDL
+    tags: ['MART_SALES']
+    schema: STG_SHAREPOINT_MDL
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: ADJUSTED_END_CORPORATION
+      - name: REFERENCE_DESIGN_CUSTOMER
+      - name: CIPO_POS_REPORTING_MATRIX
+     
+
+#--------------# SDM Staging to ETL #--------------#
+  - name: STG_SDM_CORE
+    tags: ['MART_SALES']
+    schema: STG_SDM_CORE
+    tables:
+      - name: DIM_NPD
+      - name: LKP_WEBPARTS
+      - name: LKP_WEBPARTGROUP
+      - name: LKP_CPN 
+      - name: DIM_CUSTOMERS
+      - name: LKP_CORPORATIONS
+      - name: LKP_CALENDARDAY
+      
+  - name: STG_SDM_PRESENTATION
+    tags: ['MART_SALES']
+    schema: STG_SDM_PRESENTATION
+    tables:
+      - name: CPNOEM_ALLOWEDCORP
+      - name: CPNASIC_ALLOWEDPROD
+      - name: DIM_CIPO
+      - name: FACT_QUANTENNABILLING_BASE
+      - name: LKP_CORPORATIONS
+      - name: FACT_FCSBILLING
+      - name: FACT_FCSPOS       
+      - name: DIM_FCSCUSTOMERS
+      - name: VW_PRODUCTS
+      - name: DIM_FCSPRODUCTS
+      - name: FACT_BILLING_BASE
+      - name: FACT_FCSBACKLOGCURRENT
+      - name: FACT_QUANTENNABACKLOG_BASE
+      - name: VW_CUSTOMERS
+      
+  - name: STG_SDM_FROZEN
+    tags: ['MART_SALES']
+    schema: STG_SDM_FROZEN
+    tables:
+      - name: ONSALES_DESIGNIN_DATE_HISTORICAL
+
+#--------------# DISTRIBUTOR SAMPLE SOURCE to ETL #--------------#
+#--------------# ADDED ON JAN-05-2023 #--------------#
+  - name: STG_DISTSAMPLESDB_PUBLIC
+    tags: ['MART_SALES']
+    schema: STG_DISTSAMPLESDB_PUBLIC
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: SAMPLE_LINEITEM
+      - name: SAMPLE_SHIPMENT
+      - name: SAMPLE_ADDRESS
+      - name: SAMPLE_USER   
+     
+#--------------# Oracle DWH Staging to ETL #--------------#
+  - name: STG_ONE
+    tags: ['MART_SALES']
+    schema: STG_ONE
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: BILL_ACTIVITY_DTL
+      - name: FINANCIAL_BACKLOG_CURR_BASE
+      - name: FINANCIAL_BACKLOG_DTL_BASE
+
+  - name: STG_DWH_MARTS
+    tags: ['MART_SALES']
+    schema: STG_DWH_MARTS
+    freshness: # default freshness
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    loaded_at_field: BIW_UPD_DTTM
+    tables:
+      - name: CUSTOMER_DIM
+      - name: CUST_CONTACTS_DIM
+      - name: SALES_TERRITORY_DIM
+      - name: DISTRIBUTOR_POS_CUSTOMER_DIM
+
+
+#--------------# Oracle ONE_STAGE Staging to ETL #--------------#
+  - name: STG_ONE_STAGE
+    tags: ['MART_SALES']
+    schema: STG_ONE_STAGE
+    tables:
+      - name: ACTIVITY_MATRIX_LKP    
+      - name: STG1_FMS_EXTRACT     
+
+#--------------# Oracle DWH_SALES Staging to ETL #--------------#
+  - name: STG_DWH_SALES
+    tags: ['MART_SALES']
+    schema: STG_DWH_SALES
+    tables:
+      - name: FUNNEL_SNAPSHOT_FACT
+
+#--------------# DATE FROM MART #--------------#
+  - name: MART
+    tags: ['MART_SALES']
+    database: "{{env_var('DBT_EDW_DB') ~ env_var('DBT_DEP_ENV')}}"
+    schema: MART
+    tables: 
+      - name: DATE 
