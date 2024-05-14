@@ -45,6 +45,9 @@ clean-targets:         # directories to be removed by `dbt clean`
 # using the `{{ config(...) }}` macro.
 
 #Kali D 09-21-2022 DBT Artifacts to capture the logs and load into snowflake 
-on-run-end: "{{ dbt_artifacts.upload_results(results) }}"
+# on-run-end:
+#   - "{{ dbt_artifacts.upload_results(results) }}"
+#   - "{{ edw_capture_execution_result(results) }}"
+
 
 
